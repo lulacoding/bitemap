@@ -169,3 +169,10 @@ export {
   type Comment,
   type FeedItem,
 } from './queries/social';
+export {
+  getSpeciesLeaderboard,
+  getOverallLeaderboard,
+  getPortPhillipLeaderboard,
+  compareLeaderboardRows,
+  type LeaderboardRow,
+} from './queries/leaderboards';

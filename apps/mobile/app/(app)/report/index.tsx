@@ -14,6 +14,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import {
   createCatch,
   getSpeciesById,
+  listSpecies,
   listMarineParks,
   parksContainingPoint,
   PORT_PHILLIP_BAY_CENTER,
@@ -21,6 +22,7 @@ import {
 } from '@bitemap/shared';
 import { colors } from '@bitemap/ui';
 import { useUserLocation } from '../../../src/map/useUserLocation';
+import { BagLimitCounter } from '../../../src/profile/BagLimitCounter';
 
 export default function ReportCatchScreen() {
   const { species: speciesId } = useLocalSearchParams<{ species?: string }>();
@@ -46,6 +48,20 @@ export default function ReportCatchScreen() {
     queryFn: () => listMarineParks('VIC'),
     staleTime: 24 * 60 * 60 * 1000,
   });
+
+  const speciesListQuery = useQuery({
+    queryKey: ['species', 'list'],
+    queryFn: () => listSpecies(),
+    staleTime: 60 * 60 * 1000,
+  });
+
+  const speciesNames = useMemo(() => {
+    const m: Record<string, string> = {};
+    for (const sp of speciesListQuery.data ?? []) {
+      m[sp.id] = sp.common_name;
+    }
+    return m;
+  }, [speciesListQuery.data]);
 
   const mutation = useMutation({
     mutationFn: createCatch,
@@ -100,6 +116,8 @@ export default function ReportCatchScreen() {
   return (
     <ScrollView style={s.container} contentContainerStyle={s.content}>
       <Text style={s.h1}>Log a catch</Text>
+
+      <BagLimitCounter speciesNames={speciesNames} />
 
       {parkHits.length > 0 && (
         <View style={s.warning}>

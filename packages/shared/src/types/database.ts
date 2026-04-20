@@ -409,33 +409,39 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           created_at: string
+          email_verified_at: string | null
           home_state: string | null
           id: string
           is_guide: boolean
           is_verified: boolean
           location: string | null
+          photo_backup_enabled: boolean
           username: string
         }
         Insert: {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          email_verified_at?: string | null
           home_state?: string | null
           id: string
           is_guide?: boolean
           is_verified?: boolean
           location?: string | null
+          photo_backup_enabled?: boolean
           username: string
         }
         Update: {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          email_verified_at?: string | null
           home_state?: string | null
           id?: string
           is_guide?: boolean
           is_verified?: boolean
           location?: string | null
+          photo_backup_enabled?: boolean
           username?: string
         }
         Relationships: []

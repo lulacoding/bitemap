@@ -125,3 +125,29 @@ export {
   tideBelowRampThreshold,
   type ListPoisFilters,
 } from './poi/queries';
+export {
+  profileSchema,
+  profileUpdateSchema,
+  getProfileById,
+  getProfileByUsername,
+  getMyProfile,
+  updateMyProfile,
+  getLogbook,
+  type Profile,
+  type ProfileUpdate,
+} from './queries/profiles';
+export {
+  getMyStats,
+  getMySpeciesBreakdown,
+  getMyMonthlyCounts,
+  getTodaysCatchCountsBySpecies,
+  type UserStats,
+  type SpeciesBreakdown,
+  type MonthlyBucket,
+} from './queries/stats';
+export {
+  classifyBagLimit,
+  getBagLimitStatusForSpecies,
+  type BagLimitTier,
+  type BagLimitStatus,
+} from './queries/bag-limit';

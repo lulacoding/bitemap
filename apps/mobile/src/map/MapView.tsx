@@ -11,7 +11,6 @@ import {
   listCatches,
   listMarineParks,
   listPois,
-  mockCatches,
   mapboxStyleForTheme,
   PORT_PHILLIP_BAY_CENTER,
   useFiltersStore,
@@ -87,19 +86,18 @@ export default function MapView() {
   const realCatches = catchesQuery.data ?? [];
   const hasRealCatches = realCatches.length > 0;
 
-  const pins: MockCatch[] = useMemo(() => {
-    if (hasRealCatches) {
-      return realCatches.map((c: Catch) => ({
+  const pins: MockCatch[] = useMemo(
+    () =>
+      realCatches.map((c: Catch) => ({
         id: c.id,
         lat: c.lat,
         lng: c.lng,
         species: c.location_name ?? 'Catch',
         category: 'saltwater' as const,
         ageHours: hoursAgo(c.created_at),
-      }));
-    }
-    return mockCatches;
-  }, [realCatches, hasRealCatches]);
+      })),
+    [realCatches],
+  );
 
   const centerOnUser = async () => {
     if (location) {
@@ -170,6 +168,17 @@ export default function MapView() {
         <Text style={styles.fabLogText}>+ Catch</Text>
       </Pressable>
 
+      {!catchesQuery.isLoading && !hasRealCatches && (
+        <View style={styles.empty} pointerEvents="none">
+          <View style={styles.emptyPill}>
+            <Text style={styles.emptyTitle}>No catches logged yet</Text>
+            <Text style={styles.emptyBody}>
+              Tap "+ Catch" bottom-left to be the first.
+            </Text>
+          </View>
+        </View>
+      )}
+
       <CatchPreviewSheet catch_={selected} onClose={() => setSelected(null)} />
       <POIDetailSheet poiId={selectedPoiId} onClose={() => setSelectedPoiId(null)} />
     </View>
@@ -215,4 +224,22 @@ const styles = StyleSheet.create({
   },
   fabText: { color: '#fff', fontSize: 24, fontWeight: '700' },
   fabLogText: { color: '#fff', fontSize: 15, fontWeight: '700' },
+  empty: {
+    position: 'absolute',
+    top: '38%',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  emptyPill: {
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 14,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+  },
+  emptyTitle: { fontSize: 15, fontWeight: '700', color: '#111', textAlign: 'center' },
+  emptyBody: { fontSize: 12, color: '#64748b', marginTop: 4, textAlign: 'center' },
 });

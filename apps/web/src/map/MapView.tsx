@@ -8,7 +8,6 @@ import {
   listCatches,
   listMarineParks,
   listPois,
-  mockCatches,
   alphaForAgeHours,
   pinColorForCategory,
   mapboxStyleForTheme,
@@ -232,17 +231,15 @@ export default function WebMapView() {
 
       // Pin markers
       if (filters.viewMode === 'pins') {
-        const source = hasRealCatches
-          ? realCatches.map((c) => ({
-              id: c.id,
-              lat: c.lat,
-              lng: c.lng,
-              category: 'saltwater' as const,
-              species: c.location_name ?? 'Catch',
-              ageHours:
-                (Date.now() - new Date(c.created_at).getTime()) / 3_600_000,
-            }))
-          : mockCatches;
+        const source = realCatches.map((c) => ({
+          id: c.id,
+          lat: c.lat,
+          lng: c.lng,
+          category: 'saltwater' as const,
+          species: c.location_name ?? 'Catch',
+          ageHours:
+            (Date.now() - new Date(c.created_at).getTime()) / 3_600_000,
+        }));
 
         for (const c of source) {
           const el = document.createElement('div');
@@ -326,10 +323,22 @@ export default function WebMapView() {
     );
   }
 
+  const hasCatches = (catchesQuery.data ?? []).length > 0;
+
   return (
     <div className="relative h-screen w-full">
       <div ref={ref} style={{ height: '100vh', width: '100%' }} />
       <FilterBarWeb />
+      {!catchesQuery.isLoading && !hasCatches && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="rounded-xl bg-white/95 px-5 py-4 text-center shadow-lg">
+            <p className="font-bold text-gray-900">No catches logged yet</p>
+            <p className="mt-1 text-sm text-gray-600">
+              Head to <span className="font-mono">/report</span> to be the first.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

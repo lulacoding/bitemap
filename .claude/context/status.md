@@ -23,8 +23,8 @@
 | 7 | Filters + heatmap + state-aware regs + marine parks | v0.12.0-filters | DONE |
 | 7.5 | POI layer: boat ramps, bait shops, fuel, jetties + tide thresholds | v0.12.5-pois | DONE |
 | 8 | Profiles + bag-limit counter + analytics (core) | v0.13.0-profiles | DONE |
-| 9 | Social (likes, comments, follows, feed) | v0.14.0-social | IN PROGRESS |
-| 10 | Leaderboard + rare-catch alerts + expert IDs + Claude Vision + XP | v0.15.0-leaderboard | PENDING |
+| 9 | Social core (likes, comments, follows, feed) | v0.14.0-social | DONE |
+| 10 | Leaderboard core | v0.15.0-leaderboard | IN PROGRESS |
 | 10.5 | Citizen Science (optional — criteria-gated) | v0.15.25-citizen-science | OPTIONAL |
 | 11 | Hardening & UX polish + onboarding videos + shark alerts + offline tiles | v0.15.5-hardening | PENDING |
 | **12** | **Production data integrity audit (no mocks, real data everywhere)** | **v0.16.0-data-audit** | **PENDING — blocks 13** |

@@ -151,3 +151,21 @@ export {
   type BagLimitTier,
   type BagLimitStatus,
 } from './queries/bag-limit';
+export {
+  likeCatch,
+  unlikeCatch,
+  isCatchLikedByMe,
+  commentSchema,
+  listComments,
+  postComment,
+  deleteComment,
+  follow,
+  unfollow,
+  isFollowing,
+  getFollowerIds,
+  getFollowingIds,
+  getFollowingFeed,
+  getNearbyFeed,
+  type Comment,
+  type FeedItem,
+} from './queries/social';

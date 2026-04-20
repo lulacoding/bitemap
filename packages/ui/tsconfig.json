@@ -4,5 +4,6 @@
     "outDir": "dist",
     "types": ["vitest/globals"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/**/*.native.ts", "src/**/*.native.tsx"]
 }

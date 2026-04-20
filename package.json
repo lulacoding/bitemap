@@ -23,5 +23,10 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.1.17"
+    }
   }
 }

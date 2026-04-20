@@ -94,6 +94,14 @@ export default function MapView() {
       </Pressable>
 
       <Pressable
+        style={[styles.fab, styles.fabTide]}
+        onPress={() => router.push('/(app)/tide')}
+        accessibilityLabel="Tide and conditions"
+      >
+        <Text style={styles.fabText}>≋</Text>
+      </Pressable>
+
+      <Pressable
         style={[styles.fab, styles.fabLog]}
         onPress={() => router.push('/(app)/report')}
         accessibilityLabel="Log a catch"
@@ -126,6 +134,14 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 26,
     backgroundColor: colors.primary,
+  },
+  fabTide: {
+    bottom: 90,
+    right: 24,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: colors.secondary,
   },
   fabLog: {
     bottom: 24,

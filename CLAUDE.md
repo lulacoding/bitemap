@@ -41,3 +41,7 @@ supabase test db               # run pgTAP tests
 
 See `docs/superpowers/plans/` for detailed TDD plans per phase.
 Current progress tracked in `.claude/context/status.md`.
+
+Competitor-parity enhancements layered on top of each phase:
+- `docs/superpowers/design/bitemap-competitor-gap-analysis.md` (research + sources)
+- `docs/superpowers/plans/2026-04-20-bitemap-competitor-gap-backlog.md` (actionable backlog)

@@ -1,7 +1,7 @@
 # BiteMap — Status & Roadmap
 
 **Current Date:** Apr 20, 2026
-**Current Phase:** Phases 1-5 COMPLETE; Phase 6 (weather + tide) IN PROGRESS
+**Current Phase:** Phases 1-6 COMPLETE; Phase 7 (filters + heatmap) IN PROGRESS
 **Primary Blocker:** Mapbox tokens needed to live-test map (EXPO_PUBLIC_MAPBOX_TOKEN, NEXT_PUBLIC_MAPBOX_TOKEN)
 **Launch Target:** v1.0.0 — TBD
 
@@ -19,8 +19,8 @@
 | 4 | Map read-only (Mapbox, pins, bottom sheet) | v0.9.0-map | DONE |
 | 5 | Catch reporting (core) | v0.10.0-catch | DONE |
 | 5a | Catch reporting extras (offline queue, photo upload, Edge Function) | v0.10.1-catch-extras | DEFERRED |
-| 6 | Weather + tide | v0.11.0-weather | PENDING |
-| 7 | Filters + heatmap | v0.12.0-filters | PENDING |
+| 6 | Weather + tide (Open-Meteo) + pressure trend + swell + solunar feed times | v0.11.0-weather | DONE |
+| 7 | Filters + heatmap | v0.12.0-filters | IN PROGRESS |
 | 8 | Profiles | v0.13.0-profiles | PENDING |
 | 9 | Social | v0.14.0-social | PENDING |
 | 10 | Leaderboard | v0.15.0-leaderboard | PENDING |
@@ -43,3 +43,25 @@ None yet — no device testing done.
   Current: client-side privacy snap only; direct Supabase INSERT from `createCatch`.
   Risk: a malicious client could send `privacy_level='area'` with raw GPS. Needs trigger
   or Edge Function to enforce server-side.
+
+---
+
+## Competitor-Gap Backlog
+
+Deep competitor research (Apr 2026) identified 20 gaps vs. Fishbrain, ANGLR, FishTrack,
+iNaturalist, eBird, AllTrails, OnX, FishVerify, etc. All enhancements are layered on top
+of the core phase plans and mapped into the phase where they belong.
+
+- **Full analysis:** `docs/superpowers/design/bitemap-competitor-gap-analysis.md`
+- **Prioritized actionable backlog:** `docs/superpowers/plans/2026-04-20-bitemap-competitor-gap-backlog.md`
+
+When starting a phase, open BOTH its core phase plan AND the matching "Inject into Phase N"
+section of the backlog so competitor-parity items ship in the same release tag.
+
+High-priority gaps (earliest injection points):
+- Barometric pressure trend card + swell forecast → Phase 6
+- State-aware regulations + marine-park overlay → Phase 7
+- Boat ramp + bait shop POI layer w/ ratings → new Phase 7.5 (promoted from post-v1)
+- Bag-limit counter + CSV export + condition-correlation cards → Phase 8
+- Live trip GPS broadcast + DMs + verified-guide peer review → Phase 9
+- Rare-catch alerts + expert-ID verification + Claude Vision confidence UX → Phase 10

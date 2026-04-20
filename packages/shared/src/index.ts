@@ -32,3 +32,37 @@ export {
   getCatchById,
   createCatch,
 } from './queries/catches';
+export {
+  moonPhase,
+  moonIllumination,
+  moonAgeFraction,
+  solunarRating,
+  MOON_PHASES,
+  type MoonPhaseName,
+} from './astro/moon';
+export {
+  fetchMarine,
+  fetchTide,
+  findExtremes,
+  tideStateFromPoints,
+  currentWave,
+  type TidePoint,
+  type TideExtreme,
+  type WavePoint,
+  type MarineForecast,
+} from './astro/tide';
+export {
+  fetchCurrentWeather,
+  fetchPressureHistory,
+  analysePressureTrend,
+  windDirectionName,
+  type WeatherSnapshot,
+  type PressurePoint,
+  type PressureTrend,
+  type PressureTrendAnalysis,
+} from './astro/weather';
+export {
+  feedTimesFor,
+  activeFeedTime,
+  type FeedTime,
+} from './astro/solunar';

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import {
   createCatch,
   getSpeciesById,
+  listMarineParks,
+  parksContainingPoint,
   PORT_PHILLIP_BAY_CENTER,
   type PrivacyLevel,
 } from '@bitemap/shared';
@@ -39,6 +41,12 @@ export default function ReportCatchScreen() {
     enabled: !!speciesId,
   });
 
+  const parksQuery = useQuery({
+    queryKey: ['marine-parks'],
+    queryFn: () => listMarineParks('VIC'),
+    staleTime: 24 * 60 * 60 * 1000,
+  });
+
   const mutation = useMutation({
     mutationFn: createCatch,
     onSuccess: () => {
@@ -58,6 +66,15 @@ export default function ReportCatchScreen() {
   const [lat, lng] = location
     ? [location.lat, location.lng]
     : PORT_PHILLIP_BAY_CENTER.slice().reverse();
+
+  const parkHits = useMemo(() => {
+    if (!parksQuery.data || !location) return [];
+    return parksContainingPoint(
+      parksQuery.data,
+      location.lat,
+      location.lng,
+    );
+  }, [parksQuery.data, location]);
 
   const canSubmit =
     !!speciesId && parseInt(quantity, 10) > 0 && !mutation.isPending;
@@ -83,6 +100,16 @@ export default function ReportCatchScreen() {
   return (
     <ScrollView style={s.container} contentContainerStyle={s.content}>
       <Text style={s.h1}>Log a catch</Text>
+
+      {parkHits.length > 0 && (
+        <View style={s.warning}>
+          <Text style={s.warningTitle}>⚠ Inside a marine protected area</Text>
+          <Text style={s.warningBody}>
+            {parkHits.map((p) => p.name).join(', ')} — fishing is prohibited
+            here. Log a release or move outside the zone.
+          </Text>
+        </View>
+      )}
 
       <View style={s.section}>
         <Text style={s.label}>Species</Text>
@@ -263,4 +290,14 @@ const s = StyleSheet.create({
   },
   submitDisabled: { opacity: 0.4 },
   submitText: { color: '#fff', fontSize: 17, fontWeight: '700' },
+  warning: {
+    borderRadius: 10,
+    backgroundColor: '#fef2f2',
+    borderWidth: 1,
+    borderColor: '#fecaca',
+    padding: 14,
+    marginBottom: 10,
+  },
+  warningTitle: { color: '#b91c1c', fontWeight: '700', fontSize: 15 },
+  warningBody: { color: '#7f1d1d', fontSize: 13, marginTop: 4, lineHeight: 18 },
 });

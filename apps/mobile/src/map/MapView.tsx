@@ -9,9 +9,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import {
   listCatches,
+  listMarineParks,
   mockCatches,
   mapboxStyleForTheme,
   PORT_PHILLIP_BAY_CENTER,
+  useFiltersStore,
   type Catch,
   type MockCatch,
 } from '@bitemap/shared';
@@ -20,6 +22,10 @@ import { CatchPin } from './CatchPin';
 import { CatchPreviewSheet } from './CatchPreviewSheet';
 import { useUserLocation } from './useUserLocation';
 import { useCatchSubscription } from '../realtime/useCatchSubscription';
+import { FilterBar } from './FilterBar';
+import { ViewModeToggle } from './ViewModeToggle';
+import { HeatmapLayer } from './HeatmapLayer';
+import { MarineParksLayer } from './MarineParksLayer';
 
 const MAPBOX_TOKEN = process.env.EXPO_PUBLIC_MAPBOX_TOKEN;
 if (MAPBOX_TOKEN) {
@@ -40,13 +46,38 @@ export default function MapView() {
 
   useCatchSubscription();
 
-  const { data: realCatches } = useQuery({
-    queryKey: ['catches', 'map'],
-    queryFn: () => listCatches(200),
+  const filters = useFiltersStore();
+
+  const catchesQuery = useQuery({
+    queryKey: [
+      'catches',
+      'map',
+      filters.species,
+      filters.bait,
+      filters.technique,
+      filters.freshnessHours,
+    ],
+    queryFn: () =>
+      listCatches({
+        species: filters.species.length > 0 ? filters.species : undefined,
+        bait: filters.bait,
+        technique: filters.technique,
+        freshnessHours: filters.freshnessHours,
+      }),
+    refetchInterval: 30_000,
   });
 
+  const parksQuery = useQuery({
+    queryKey: ['marine-parks'],
+    queryFn: () => listMarineParks('VIC'),
+    staleTime: 24 * 60 * 60 * 1000,
+  });
+
+  const realCatches = catchesQuery.data ?? [];
+  const hasRealCatches = realCatches.length > 0;
+
   const pins: MockCatch[] = useMemo(() => {
-    if (realCatches && realCatches.length > 0) {
+    if (hasRealCatches) {
       return realCatches.map((c: Catch) => ({
         id: c.id,
         lat: c.lat,
@@ -57,7 +88,7 @@ export default function MapView() {
       }));
     }
     return mockCatches;
-  }, [realCatches]);
+  }, [realCatches, hasRealCatches]);
 
   const centerOnUser = async () => {
     if (location) {
@@ -80,10 +111,22 @@ export default function MapView() {
           animationDuration={800}
         />
         <UserLocation visible showsUserHeadingIndicator />
-        {pins.map((c) => (
-          <CatchPin key={c.id} catch={c} onPress={() => setSelected(c)} />
-        ))}
+
+        {filters.layers.marineParks && parksQuery.data && (
+          <MarineParksLayer parks={parksQuery.data} />
+        )}
+
+        {filters.viewMode === 'heatmap' && hasRealCatches ? (
+          <HeatmapLayer catches={realCatches} />
+        ) : (
+          pins.map((c) => (
+            <CatchPin key={c.id} catch={c} onPress={() => setSelected(c)} />
+          ))
+        )}
       </RNMapView>
+
+      <FilterBar />
+      <ViewModeToggle />
 
       <Pressable
         style={[styles.fab, styles.fabLocation]}

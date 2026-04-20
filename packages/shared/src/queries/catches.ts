@@ -6,16 +6,47 @@ import {
   type CatchInput,
 } from '../schemas/catch';
 
+export interface CatchFilters {
+  species?: string[];
+  bait?: string | undefined;
+  technique?: string | undefined;
+  /** Upper-bound of catch age in hours (default 48) */
+  freshnessHours?: number;
+  limit?: number;
+}
+
 /**
  * List recent public catches (excludes expired and hidden).
- * Returns at most `limit` catches ordered by newest first.
+ * Supports optional filters so the same helper powers both the map and the
+ * filtered-view query hook.
  */
-export async function listCatches(limit = 200): Promise<Catch[]> {
-  const { data, error } = await supabase()
+export async function listCatches(
+  arg: CatchFilters | number = {},
+): Promise<Catch[]> {
+  const f: CatchFilters = typeof arg === 'number' ? { limit: arg } : arg;
+  const limit = f.limit ?? 200;
+  const freshnessHours = f.freshnessHours ?? 48;
+  const cutoff = new Date(Date.now() - freshnessHours * 3_600_000).toISOString();
+
+  let q = supabase()
     .from('catches')
     .select('*')
     .eq('is_hidden', false)
     .gt('expires_at', new Date().toISOString())
+    .gt('created_at', cutoff)
+    .neq('privacy_level', 'hidden');
+
+  if (f.species && f.species.length > 0) {
+    q = q.in('species_id', f.species);
+  }
+  if (f.bait) {
+    q = q.ilike('bait_used', `%${f.bait}%`);
+  }
+  if (f.technique) {
+    q = q.ilike('technique', `%${f.technique}%`);
+  }
+
+  const { data, error } = await q
     .order('created_at', { ascending: false })
     .limit(limit);
 

@@ -31,6 +31,7 @@ export {
   listCatches,
   getCatchById,
   createCatch,
+  type CatchFilters,
 } from './queries/catches';
 export {
   moonPhase,
@@ -66,3 +67,34 @@ export {
   activeFeedTime,
   type FeedTime,
 } from './astro/solunar';
+export {
+  useFiltersStore,
+  DEFAULT_FILTERS,
+  weightForAgeHours,
+  weightForCreatedAt,
+  type ViewMode,
+  type FreshnessHours,
+  type MapLayers,
+  type FiltersState,
+} from './map/filters';
+export {
+  AU_STATES,
+  auStateSchema,
+  speciesRegulationSchema,
+  getRegulationsForSpecies,
+  getRegulationForState,
+  formatRegulationRow,
+  type AuState,
+  type SpeciesRegulation,
+} from './regulations/regulations';
+export {
+  marineParkCategorySchema,
+  marineParkSchema,
+  listMarineParks,
+  parksContainingBbox,
+  pointInPolygon,
+  parksContainingPoint,
+  type MarineParkCategory,
+  type MarineParkRow,
+  type MarineParkWithGeometry,
+} from './regulations/marine-parks';

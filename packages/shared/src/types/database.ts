@@ -204,11 +204,57 @@ export type Database = {
           },
         ]
       }
+      marine_parks: {
+        Row: {
+          bbox_max_lat: number
+          bbox_max_lng: number
+          bbox_min_lat: number
+          bbox_min_lng: number
+          category: string
+          created_at: string | null
+          id: string
+          name: string
+          notes: string | null
+          polygon_geojson: string
+          source_url: string | null
+          state: string
+        }
+        Insert: {
+          bbox_max_lat: number
+          bbox_max_lng: number
+          bbox_min_lat: number
+          bbox_min_lng: number
+          category: string
+          created_at?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          polygon_geojson: string
+          source_url?: string | null
+          state?: string
+        }
+        Update: {
+          bbox_max_lat?: number
+          bbox_max_lng?: number
+          bbox_min_lat?: number
+          bbox_min_lng?: number
+          category?: string
+          created_at?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          polygon_geojson?: string
+          source_url?: string | null
+          state?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           bio: string | null
           created_at: string
+          home_state: string | null
           id: string
           is_guide: boolean
           is_verified: boolean
@@ -219,6 +265,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          home_state?: string | null
           id: string
           is_guide?: boolean
           is_verified?: boolean
@@ -229,6 +276,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          home_state?: string | null
           id?: string
           is_guide?: boolean
           is_verified?: boolean
@@ -343,6 +391,50 @@ export type Database = {
           state?: string | null
         }
         Relationships: []
+      }
+      species_regulations: {
+        Row: {
+          bag_limit: number | null
+          closed_season_end: string | null
+          closed_season_start: string | null
+          last_verified: string | null
+          min_legal_size_mm: number | null
+          notes: string | null
+          source_url: string | null
+          species_id: string
+          state: string
+        }
+        Insert: {
+          bag_limit?: number | null
+          closed_season_end?: string | null
+          closed_season_start?: string | null
+          last_verified?: string | null
+          min_legal_size_mm?: number | null
+          notes?: string | null
+          source_url?: string | null
+          species_id: string
+          state: string
+        }
+        Update: {
+          bag_limit?: number | null
+          closed_season_end?: string | null
+          closed_season_start?: string | null
+          last_verified?: string | null
+          min_legal_size_mm?: number | null
+          notes?: string | null
+          source_url?: string | null
+          species_id?: string
+          state?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "species_regulations_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

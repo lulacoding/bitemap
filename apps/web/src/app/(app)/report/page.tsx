@@ -6,6 +6,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createCatch,
   getSpeciesById,
+  listMarineParks,
+  parksContainingPoint,
   type PrivacyLevel,
 } from '@bitemap/shared';
 
@@ -36,6 +38,17 @@ export default function ReportPage() {
     queryFn: () => (speciesId ? getSpeciesById(speciesId) : null),
     enabled: !!speciesId,
   });
+
+  const parksQuery = useQuery({
+    queryKey: ['marine-parks'],
+    queryFn: () => listMarineParks('VIC'),
+    staleTime: 24 * 60 * 60 * 1000,
+  });
+
+  const parkHits =
+    parksQuery.data && coords
+      ? parksContainingPoint(parksQuery.data, coords.lat, coords.lng)
+      : [];
 
   const mutation = useMutation({
     mutationFn: createCatch,
@@ -71,6 +84,18 @@ export default function ReportPage() {
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
       <h1 className="text-3xl font-bold text-gray-900">Log a catch</h1>
+
+      {parkHits.length > 0 && (
+        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4">
+          <p className="font-bold text-red-700">
+            ⚠ Inside a marine protected area
+          </p>
+          <p className="mt-1 text-sm text-red-700">
+            {parkHits.map((p) => p.name).join(', ')} — fishing is prohibited
+            here. Log a release or move outside the zone.
+          </p>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-5">
         <section className="space-y-2">

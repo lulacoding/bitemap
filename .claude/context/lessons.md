@@ -12,6 +12,15 @@ Things that get done wrong repeatedly. Check these before writing code.
 
 ---
 
+## 1b. Zod v4 z.uuid() is STRICT about variant bits
+
+**What goes wrong:** Tests use fake UUIDs like `'11111111-1111-1111-1111-111111111111'` — these fail `z.uuid()` because the variant nibble (first char of segment 4) must be `[89abAB]` per RFC 4122.
+**Correct:** Use a valid v4 UUID in tests: `'11111111-1111-4111-8111-111111111111'` (version=4, variant=8).
+**Error signature:** `invalid_format` with `format: "uuid"` and pattern including `[89abAB]`.
+**When to check:** Any unit test that constructs UUIDs by hand.
+
+---
+
 ## 2. Supabase SSR: getAll/setAll cookie API
 
 **What goes wrong:** Uses old `get`/`set`/`remove` cookie methods from @supabase/ssr.

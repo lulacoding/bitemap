@@ -14,3 +14,21 @@ export {
   type CatchCategory,
   type ColorScheme,
 } from './map/helpers';
+export {
+  applyPrivacy,
+  type PrivacyLevel,
+  type Coord,
+  type PrivacyResult,
+} from './geo/privacy';
+export {
+  catchInputSchema,
+  catchSchema,
+  privacyLevelSchema,
+  type CatchInput,
+  type Catch,
+} from './schemas/catch';
+export {
+  listCatches,
+  getCatchById,
+  createCatch,
+} from './queries/catches';

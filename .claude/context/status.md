@@ -1,8 +1,8 @@
 # BiteMap — Status & Roadmap
 
 **Current Date:** Apr 20, 2026
-**Current Phase:** Phase 3 COMPLETE; Phase 4 (map read-only) IN PROGRESS
-**Primary Blocker:** Mapbox token setup (EXPO_PUBLIC_MAPBOX_TOKEN, NEXT_PUBLIC_MAPBOX_TOKEN)
+**Current Phase:** Phases 1-5 COMPLETE; Phase 6 (weather + tide) IN PROGRESS
+**Primary Blocker:** Mapbox tokens needed to live-test map (EXPO_PUBLIC_MAPBOX_TOKEN, NEXT_PUBLIC_MAPBOX_TOKEN)
 **Launch Target:** v1.0.0 — TBD
 
 ---
@@ -16,8 +16,9 @@
 | 1 | Supabase schema, RLS, pgTAP, TS types | v0.6.0-schema | DONE |
 | 2 | Auth (web + mobile, Google OAuth) | v0.7.0-auth | DONE |
 | 3 | Species catalogue (seed, Zod, queries, screens) | v0.8.0-species | DONE |
-| 4 | Map read-only (Mapbox, pins, bottom sheet) | v0.9.0-map | IN PROGRESS |
-| 5 | Catch reporting + offline | v0.10.0-catch | PENDING |
+| 4 | Map read-only (Mapbox, pins, bottom sheet) | v0.9.0-map | DONE |
+| 5 | Catch reporting (core) | v0.10.0-catch | DONE |
+| 5a | Catch reporting extras (offline queue, photo upload, Edge Function) | v0.10.1-catch-extras | DEFERRED |
 | 6 | Weather + tide | v0.11.0-weather | PENDING |
 | 7 | Filters + heatmap | v0.12.0-filters | PENDING |
 | 8 | Profiles | v0.13.0-profiles | PENDING |
@@ -37,3 +38,8 @@ None yet — no device testing done.
 - Supabase is local Docker only — hosted migration deferred to Phase 11
 - E2E tests (Detox/Playwright) deferred to Phase 11
 - Storybook install deferred to Phase 11
+- **Phase 5 deferred to v0.10.1-catch-extras:** server-side privacy snap (Edge Function),
+  offline queue (AsyncStorage + NetInfo), photo upload (expo-image-picker + Storage).
+  Current: client-side privacy snap only; direct Supabase INSERT from `createCatch`.
+  Risk: a malicious client could send `privacy_level='area'` with raw GPS. Needs trigger
+  or Edge Function to enforce server-side.

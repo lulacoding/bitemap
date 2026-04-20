@@ -1,3 +1,5 @@
+'use client';
+
 export interface TabItem {
   key: string;
   label: string;

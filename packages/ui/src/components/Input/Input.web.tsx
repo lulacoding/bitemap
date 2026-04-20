@@ -1,3 +1,5 @@
+'use client';
+
 export interface InputProps {
   label: string;
   value: string;

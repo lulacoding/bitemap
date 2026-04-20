@@ -1,3 +1,5 @@
+'use client';
+
 import type { SheetProps } from '../Sheet/Sheet.web';
 import { Sheet } from '../Sheet/Sheet.web';
 

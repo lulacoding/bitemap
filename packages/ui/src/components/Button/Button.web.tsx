@@ -1,3 +1,5 @@
+'use client';
+
 import type { ButtonProps } from './types';
 
 const variantClass: Record<NonNullable<ButtonProps['variant']>, string> = {

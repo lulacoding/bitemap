@@ -25,6 +25,20 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsDownloadToken": ""
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "BiteMap uses your location to show nearby catches and help you log spots."
+        }
+      ]
+    ]
   }
 }

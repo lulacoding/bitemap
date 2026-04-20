@@ -249,6 +249,161 @@ export type Database = {
         }
         Relationships: []
       }
+      poi_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          poi_id: string
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          poi_id: string
+          rating: number
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          poi_id?: string
+          rating?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poi_reviews_poi_id_fkey"
+            columns: ["poi_id"]
+            isOneToOne: false
+            referencedRelation: "pois"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "poi_reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      poi_status_reports: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          notes: string | null
+          poi_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          notes?: string | null
+          poi_id: string
+          status: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          notes?: string | null
+          poi_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poi_status_reports_poi_id_fkey"
+            columns: ["poi_id"]
+            isOneToOne: false
+            referencedRelation: "pois"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "poi_status_reports_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pois: {
+        Row: {
+          address: string | null
+          category: string
+          created_at: string
+          created_by: string | null
+          hours: string | null
+          id: string
+          lat: number
+          lng: number
+          name: string
+          phone: string | null
+          rating_avg: number | null
+          rating_count: number
+          source: string
+          state: string
+          tide_min_m: number | null
+          user_submitted: boolean
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          category: string
+          created_at?: string
+          created_by?: string | null
+          hours?: string | null
+          id?: string
+          lat: number
+          lng: number
+          name: string
+          phone?: string | null
+          rating_avg?: number | null
+          rating_count?: number
+          source?: string
+          state?: string
+          tide_min_m?: number | null
+          user_submitted?: boolean
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          hours?: string | null
+          id?: string
+          lat?: number
+          lng?: number
+          name?: string
+          phone?: string | null
+          rating_avg?: number | null
+          rating_count?: number
+          source?: string
+          state?: string
+          tide_min_m?: number | null
+          user_submitted?: boolean
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pois_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null

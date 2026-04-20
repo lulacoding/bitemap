@@ -51,6 +51,8 @@ export function FilterBar() {
     (!layers.marineParks ? 1 : 0) +
     (layers.pois ? 1 : 0);
 
+  const toggleP = () => toggleLayer('pois');
+
   return (
     <>
       <View style={styles.wrapper}>
@@ -80,6 +82,11 @@ export function FilterBar() {
             label="Marine parks"
             active={layers.marineParks}
             onPress={() => toggleLayer('marineParks')}
+          />
+          <Chip
+            label="Ramps & bait"
+            active={layers.pois}
+            onPress={toggleP}
           />
           {activeCount > 0 && (
             <Pressable onPress={reset} style={styles.clear}>

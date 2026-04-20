@@ -1,7 +1,7 @@
 # BiteMap — Status & Roadmap
 
 **Current Date:** Apr 20, 2026
-**Current Phase:** Phases 1-7 COMPLETE; Phase 8 (profiles) IN PROGRESS
+**Current Phase:** Phases 1-7.5 COMPLETE; Phase 8 (profiles) IN PROGRESS
 **Primary Blocker:** Mapbox tokens needed to live-test map (EXPO_PUBLIC_MAPBOX_TOKEN, NEXT_PUBLIC_MAPBOX_TOKEN)
 **Launch Target:** v1.0.0 — TBD
 
@@ -21,7 +21,7 @@
 | 5a | Catch reporting extras (offline queue, photo upload, Edge Function) | v0.10.1-catch-extras | DEFERRED |
 | 6 | Weather + tide (Open-Meteo) + pressure trend + swell + solunar feed times | v0.11.0-weather | DONE |
 | 7 | Filters + heatmap + state-aware regs + marine parks | v0.12.0-filters | DONE |
-| 7.5 | POI layer: boat ramps, bait shops, fuel, jetties + tide thresholds | v0.12.5-pois | PENDING |
+| 7.5 | POI layer: boat ramps, bait shops, fuel, jetties + tide thresholds | v0.12.5-pois | DONE |
 | 8 | Profiles + bag-limit counter + CSV export + analytics + correlation cards | v0.13.0-profiles | IN PROGRESS |
 | 9 | Social + live trips + DMs + verified-guide peer review + reputation | v0.14.0-social | PENDING |
 | 10 | Leaderboard + rare-catch alerts + expert IDs + Claude Vision + XP | v0.15.0-leaderboard | PENDING |

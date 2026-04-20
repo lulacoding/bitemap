@@ -10,6 +10,7 @@ import { useRouter } from 'expo-router';
 import {
   listCatches,
   listMarineParks,
+  listPois,
   mockCatches,
   mapboxStyleForTheme,
   PORT_PHILLIP_BAY_CENTER,
@@ -26,6 +27,8 @@ import { FilterBar } from './FilterBar';
 import { ViewModeToggle } from './ViewModeToggle';
 import { HeatmapLayer } from './HeatmapLayer';
 import { MarineParksLayer } from './MarineParksLayer';
+import { POILayer } from './POILayer';
+import { POIDetailSheet } from './POIDetailSheet';
 
 const MAPBOX_TOKEN = process.env.EXPO_PUBLIC_MAPBOX_TOKEN;
 if (MAPBOX_TOKEN) {
@@ -40,6 +43,7 @@ export default function MapView() {
   const scheme = useColorScheme();
   const router = useRouter();
   const [selected, setSelected] = useState<MockCatch | null>(null);
+  const [selectedPoiId, setSelectedPoiId] = useState<string | null>(null);
   const { location, requestPermission } = useUserLocation();
   const [cameraCenter, setCameraCenter] =
     useState<[number, number]>(PORT_PHILLIP_BAY_CENTER);
@@ -71,6 +75,13 @@ export default function MapView() {
     queryKey: ['marine-parks'],
     queryFn: () => listMarineParks('VIC'),
     staleTime: 24 * 60 * 60 * 1000,
+  });
+
+  const poisQuery = useQuery({
+    queryKey: ['pois', 'vic'],
+    queryFn: () => listPois({ state: 'VIC', limit: 500 }),
+    staleTime: 60 * 60 * 1000,
+    enabled: filters.layers.pois,
   });
 
   const realCatches = catchesQuery.data ?? [];
@@ -116,6 +127,13 @@ export default function MapView() {
           <MarineParksLayer parks={parksQuery.data} />
         )}
 
+        {filters.layers.pois && poisQuery.data && (
+          <POILayer
+            pois={poisQuery.data}
+            onSelect={(id) => setSelectedPoiId(id)}
+          />
+        )}
+
         {filters.viewMode === 'heatmap' && hasRealCatches ? (
           <HeatmapLayer catches={realCatches} />
         ) : (
@@ -153,6 +171,7 @@ export default function MapView() {
       </Pressable>
 
       <CatchPreviewSheet catch_={selected} onClose={() => setSelected(null)} />
+      <POIDetailSheet poiId={selectedPoiId} onClose={() => setSelectedPoiId(null)} />
     </View>
   );
 }

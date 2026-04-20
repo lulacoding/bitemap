@@ -98,3 +98,30 @@ export {
   type MarineParkRow,
   type MarineParkWithGeometry,
 } from './regulations/marine-parks';
+export {
+  POI_CATEGORIES,
+  poiCategorySchema,
+  poiSchema,
+  poiReviewSchema,
+  poiStatusSchema,
+  poiStatusReportSchema,
+  poiSubmissionInputSchema,
+  type Poi,
+  type PoiCategory,
+  type PoiReview,
+  type PoiStatus,
+  type PoiStatusReport,
+  type PoiSubmissionInput,
+} from './poi/schemas';
+export {
+  listPois,
+  getPoiById,
+  listPoiReviews,
+  listActivePoiStatusReports,
+  submitPoi,
+  postPoiStatus,
+  upsertPoiReview,
+  deletePoiReview,
+  tideBelowRampThreshold,
+  type ListPoisFilters,
+} from './poi/queries';

@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import {
   listCatches,
   listMarineParks,
+  listPois,
   mockCatches,
   alphaForAgeHours,
   pinColorForCategory,
@@ -15,7 +16,27 @@ import {
   useFiltersStore,
   PORT_PHILLIP_BAY_CENTER,
   type Catch,
+  type Poi,
+  type PoiCategory,
 } from '@bitemap/shared';
+
+const POI_CATEGORY_COLORS: Record<PoiCategory, string> = {
+  boat_ramp: '#0E5C8A',
+  bait_shop: '#E4572E',
+  fuel: '#F59E0B',
+  jetty: '#6B7280',
+  boat_hire: '#2BB7A8',
+  charter: '#7A5FD1',
+};
+
+const POI_CATEGORY_LABELS: Record<PoiCategory, string> = {
+  boat_ramp: 'Boat ramp',
+  bait_shop: 'Bait shop',
+  fuel: 'Fuel dock',
+  jetty: 'Jetty / pier',
+  boat_hire: 'Boat hire',
+  charter: 'Charter',
+};
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? '';
 
@@ -23,6 +44,7 @@ export default function WebMapView() {
   const ref = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<mapboxgl.Marker[]>([]);
+  const poiMarkersRef = useRef<mapboxgl.Marker[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const filters = useFiltersStore();
@@ -50,6 +72,13 @@ export default function WebMapView() {
     queryKey: ['marine-parks'],
     queryFn: () => listMarineParks('VIC'),
     staleTime: 24 * 60 * 60 * 1000,
+  });
+
+  const poisQuery = useQuery({
+    queryKey: ['pois', 'vic'],
+    queryFn: () => listPois({ state: 'VIC', limit: 500 }),
+    staleTime: 60 * 60 * 1000,
+    enabled: filters.layers.pois,
   });
 
   // Initialise map
@@ -243,6 +272,49 @@ export default function WebMapView() {
     else map.once('load', install);
   }, [catchesQuery.data, filters.viewMode]);
 
+  // POI markers
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    poiMarkersRef.current.forEach((m) => m.remove());
+    poiMarkersRef.current = [];
+
+    if (!filters.layers.pois) return;
+    const pois = poisQuery.data ?? [];
+
+    const install = () => {
+      for (const p of pois) {
+        const el = document.createElement('div');
+        el.style.width = '14px';
+        el.style.height = '14px';
+        el.style.borderRadius = '50%';
+        el.style.border = '2px solid #fff';
+        el.style.backgroundColor =
+          POI_CATEGORY_COLORS[p.category] ?? '#6B7280';
+        el.style.cursor = 'pointer';
+        el.setAttribute('data-testid', `poi-${p.id}`);
+        el.setAttribute('role', 'button');
+        el.setAttribute(
+          'aria-label',
+          `${POI_CATEGORY_LABELS[p.category] ?? 'POI'}: ${p.name}`,
+        );
+
+        const popup = new mapboxgl.Popup({ offset: 12 });
+        popup.on('open', () => populatePoiPopup(popup, p));
+
+        const marker = new mapboxgl.Marker({ element: el })
+          .setLngLat([p.lng, p.lat])
+          .setPopup(popup)
+          .addTo(map);
+        poiMarkersRef.current.push(marker);
+      }
+    };
+
+    if (map.isStyleLoaded()) install();
+    else map.once('load', install);
+  }, [poisQuery.data, filters.layers.pois]);
+
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
@@ -262,6 +334,58 @@ export default function WebMapView() {
   );
 }
 
+/**
+ * Populates the popup body with POI details. Uses DOM APIs + textContent
+ * (never string interpolation of user-supplied text) to keep XSS surface zero.
+ */
+function populatePoiPopup(popup: mapboxgl.Popup, poi: Poi) {
+  const container = document.createElement('div');
+  container.style.minWidth = '200px';
+  container.style.fontFamily = 'Inter, system-ui, sans-serif';
+
+  const category = document.createElement('p');
+  category.style.cssText =
+    'margin:0;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.4px';
+  category.textContent = POI_CATEGORY_LABELS[poi.category] ?? 'POI';
+  container.appendChild(category);
+
+  const name = document.createElement('p');
+  name.style.cssText = 'margin:2px 0 0;font-size:15px;font-weight:700;color:#111';
+  name.textContent = poi.name;
+  container.appendChild(name);
+
+  if (poi.address) {
+    const addr = document.createElement('p');
+    addr.style.cssText = 'margin:4px 0 0;font-size:12px;color:#4b5563';
+    addr.textContent = poi.address;
+    container.appendChild(addr);
+  }
+
+  if (poi.hours) {
+    const hrs = document.createElement('p');
+    hrs.style.cssText = 'margin:2px 0 0;font-size:12px;color:#4b5563';
+    hrs.textContent = `Hours: ${poi.hours}`;
+    container.appendChild(hrs);
+  }
+
+  if (poi.rating_avg != null && poi.rating_count > 0) {
+    const rating = document.createElement('p');
+    rating.style.cssText = 'margin:4px 0 0;font-size:12px;color:#b45309;font-weight:600';
+    const stars = '★'.repeat(Math.round(poi.rating_avg));
+    rating.textContent = `${stars} ${poi.rating_avg.toFixed(1)} · ${poi.rating_count} review${poi.rating_count === 1 ? '' : 's'}`;
+    container.appendChild(rating);
+  }
+
+  if (poi.tide_min_m != null && poi.category === 'boat_ramp') {
+    const tide = document.createElement('p');
+    tide.style.cssText = 'margin:4px 0 0;font-size:11px;color:#64748b;font-style:italic';
+    tide.textContent = `Accessible above ${poi.tide_min_m.toFixed(2)} m`;
+    container.appendChild(tide);
+  }
+
+  popup.setDOMContent(container);
+}
+
 function FilterBarWeb() {
   const {
     species,
@@ -277,7 +401,8 @@ function FilterBarWeb() {
   const activeCount =
     species.length +
     (freshnessHours !== 48 ? 1 : 0) +
-    (!layers.marineParks ? 1 : 0);
+    (!layers.marineParks ? 1 : 0) +
+    (layers.pois ? 1 : 0);
 
   return (
     <div className="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center">
@@ -330,6 +455,16 @@ function FilterBarWeb() {
           }`}
         >
           Marine parks
+        </button>
+        <button
+          onClick={() => toggleLayer('pois')}
+          className={`rounded-full px-3 py-1 text-sm font-semibold transition ${
+            layers.pois
+              ? 'bg-[#0E5C8A] text-white'
+              : 'text-gray-700 hover:bg-gray-100'
+          }`}
+        >
+          Ramps & bait
         </button>
         {activeCount > 0 && (
           <button

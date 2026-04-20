@@ -5,5 +5,10 @@
     "types": ["vitest/globals"]
   },
   "include": ["src"],
-  "exclude": ["src/**/*.native.ts", "src/**/*.native.tsx"]
+  "exclude": [
+    "src/**/*.native.ts",
+    "src/**/*.native.tsx",
+    "src/**/*.stories.tsx",
+    ".storybook"
+  ]
 }

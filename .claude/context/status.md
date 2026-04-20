@@ -28,8 +28,9 @@
 | 10.5 | Citizen Science (optional — criteria-gated) | v0.15.25-citizen-science | OPTIONAL |
 | 11 | Hardening & UX polish + onboarding videos + shark alerts + offline tiles | v0.15.5-hardening | DEFERRED (external infra) |
 | **12** | **Production data integrity audit (no mocks, real data everywhere)** | **v0.16.0-data-audit** | **DONE (core sweep) — device walkthrough still pending** |
-| **13** | **Security hardening (cybersecurity audit + pen-test)** | **v0.17.0-security** | **PENDING — blocks v1.0** |
-| 14 | v1.0.0 launch | v1.0.0 | PENDING |
+| **13** | **Security hardening (cybersecurity audit + pen-test)** | **v0.17.0-security** | **DONE (technical core); external pen-test pending** |
+| 14 | v1.0.0-rc1 launch candidate | v1.0.0-rc1 | DONE |
+| 15 | v1.0.0 launch | v1.0.0 | **BLOCKED on external pen-test + Sentry + Vercel + EAS provisioning** |
 
 ---
 

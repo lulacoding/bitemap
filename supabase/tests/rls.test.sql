@@ -11,7 +11,17 @@ select ok((select relrowsecurity from pg_class where relname = 'catch_comments')
 select ok((select relrowsecurity from pg_class where relname = 'follows'), 'RLS enabled on follows');
 
 -- Named policies exist
-select policies_are('public', 'profiles', ARRAY['profiles_read','profiles_update_own'], 'profiles policies');
+select policies_are(
+  'public',
+  'profiles',
+  ARRAY[
+    'profiles_read',
+    'profiles_update_own',
+    'profiles_authenticated_read',
+    'profiles_anon_read_limited'
+  ],
+  'profiles policies'
+);
 select policies_are('public', 'species', ARRAY['species_read'], 'species policies');
 select policies_are('public', 'saved_spots', ARRAY['saved_spots_owner'], 'saved_spots policies');
 

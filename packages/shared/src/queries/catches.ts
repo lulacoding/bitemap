@@ -1,5 +1,4 @@
 import { supabase } from '../supabase/browser';
-import { applyPrivacy } from '../geo/privacy';
 import {
   catchSchema,
   type Catch,
@@ -69,19 +68,11 @@ export async function getCatchById(id: string): Promise<Catch | null> {
 }
 
 /**
- * Create a catch. Applies client-side privacy snap before insert.
- *
- * NOTE: The server should ALSO re-apply privacy snap in a trigger or
- * Edge Function to prevent a malicious client from sending
- * privacy_level='area' with raw GPS. The current implementation trusts
- * the client; server-side snap will land in Phase 5a.
+ * Create a catch. Sends raw coords — the server-side BEFORE-INSERT trigger
+ * `snap_catch_privacy` (migration 20260420000015) is the truth-of-record for
+ * privacy snap. We still pass `privacy_level` so the trigger knows what to do.
  */
 export async function createCatch(input: CatchInput): Promise<Catch> {
-  const snapped = applyPrivacy(input.privacy_level, {
-    lat: input.lat,
-    lng: input.lng,
-  });
-
   const { data: user } = await supabase().auth.getUser();
   if (!user.user) throw new Error('Not authenticated');
 
@@ -93,11 +84,11 @@ export async function createCatch(input: CatchInput): Promise<Catch> {
     bait_used: input.bait_used ?? null,
     technique: input.technique ?? null,
     location_name: input.location_name ?? null,
-    lat: snapped.lat,
-    lng: snapped.lng,
+    lat: input.lat,
+    lng: input.lng,
     privacy_level: input.privacy_level,
-    is_hidden: snapped.is_hidden,
     photo_url: input.photo_url ?? null,
+    // is_hidden + snapped coords set by the server trigger
   };
 
   const { data, error } = await supabase()

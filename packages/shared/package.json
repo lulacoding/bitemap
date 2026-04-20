@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "gen-types": "supabase gen types typescript --local --schema public 2>/dev/null > src/types/database.ts"
   },
   "devDependencies": { "vitest": "^2.0.0" }
 }

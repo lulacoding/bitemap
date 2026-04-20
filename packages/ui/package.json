@@ -5,7 +5,8 @@
   "types": "./src/index.ts",
   "scripts": {
     "lint": "eslint src",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "echo \"(no ui tests yet)\" && exit 0"
   },
   "peerDependencies": { "react": "^18.3.0" }
 }

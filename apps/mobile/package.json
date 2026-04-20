@@ -7,7 +7,10 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "echo \"(mobile lint deferred to Phase 0.5)\" && exit 0",
+    "test": "echo \"(no mobile tests yet)\" && exit 0",
+    "build": "echo \"(mobile build via EAS in Phase 11)\" && exit 0"
   },
   "dependencies": {
     "expo": "~54.0.33",

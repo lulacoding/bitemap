@@ -1,0 +1,35 @@
+-- Truncate existing seed data to allow re-runs
+TRUNCATE species RESTART IDENTITY CASCADE;
+
+INSERT INTO species (common_name, scientific_name, category, min_legal_size_mm, bag_limit, closed_season_start, closed_season_end, state, image_url, description)
+VALUES
+  ('Snapper', 'Chrysophrys auratus', 'saltwater', 280, 3, NULL, NULL, 'VIC', NULL, 'Iconic Australian reef fish, prized by recreational anglers. Found throughout Port Phillip Bay and Bass Strait reefs.'),
+  ('King George Whiting', 'Sillaginodes punctatus', 'saltwater', 270, 20, NULL, NULL, 'VIC', NULL, 'Highly regarded table fish found in seagrass beds. A favourite target for Victorian bay anglers.'),
+  ('Dusky Flathead', 'Platycephalus fuscus', 'saltwater', 300, 10, NULL, NULL, 'VIC', NULL, 'A popular sportfish and table species found in estuaries and shallow coastal waters.'),
+  ('Australian Salmon', 'Arripis trutta', 'saltwater', NULL, 20, NULL, NULL, 'VIC', NULL, 'A hard-fighting schooling fish common along Victorian beaches and coastal inlets.'),
+  ('Black Bream', 'Acanthopagrus butcheri', 'saltwater', 250, 10, NULL, NULL, 'VIC', NULL, 'One of Victoria''s most popular sport fish. Commonly found in estuaries, bays, and tidal rivers.'),
+  ('Mulloway', 'Argyrosomus japonicus', 'saltwater', 580, 5, NULL, NULL, 'VIC', NULL, 'Also known as Jewfish. A prized large sportfish found in estuaries and nearshore coastal waters.'),
+  ('Gummy Shark', 'Mustelus antarcticus', 'saltwater', 450, 2, NULL, NULL, 'VIC', NULL, 'Victoria''s most commonly caught shark species. Excellent eating fish targeted throughout Port Phillip Bay.'),
+  ('Garfish', 'Hyporhamphus australis', 'saltwater', 200, 40, NULL, NULL, 'VIC', NULL, 'Slender schooling fish popular for light tackle fishing. Often caught in Port Phillip Bay during summer.'),
+  ('Southern Calamari', 'Sepioteuthis australis', 'saltwater', 60, 10, NULL, NULL, 'VIC', NULL, 'Popular squid species found in seagrass beds. Minimum size refers to mantle length.'),
+  ('Silver Trevally', 'Pseudocaranx georgianus', 'saltwater', 250, 20, NULL, NULL, 'VIC', NULL, 'A hard-fighting schooling fish commonly found in bays and coastal waters.'),
+  ('Barracouta', 'Thyrsites atun', 'saltwater', NULL, 20, NULL, NULL, 'VIC', NULL, 'A fast, toothy predator found in large schools along Victorian coastlines.'),
+  ('Southern Rock Lobster', 'Jasus edwardsii', 'saltwater', 105, 6, NULL, NULL, 'VIC', NULL, 'Highly valued crustacean found along rocky reefs. Minimum size refers to carapace length.'),
+  ('Blacklip Abalone', 'Haliotis rubra', 'saltwater', 120, 5, NULL, NULL, 'VIC', NULL, 'Prized shellfish found on rocky reefs. Subject to strict bag and size limits in Victoria.'),
+  ('Blue Mussel', 'Mytilus galloprovincialis', 'saltwater', NULL, 50, NULL, NULL, 'VIC', NULL, 'Common bivalve found on rocky shorelines and pier pylons throughout Port Phillip Bay.'),
+  ('Southern Bluefin Tuna', 'Thunnus maccoyii', 'pelagic', NULL, 2, NULL, NULL, 'VIC', NULL, 'An iconic pelagic sportfish found in Bass Strait. One of the world''s most prized game fish.'),
+  ('Yellowtail Kingfish', 'Seriola lalandi', 'saltwater', 600, 5, NULL, NULL, 'VIC', NULL, 'A powerful pelagic sportfish seasonally found along Victorian coastlines and offshore reefs.'),
+  ('Leatherjacket', 'Acanthaluteres spilomelanurus', 'saltwater', NULL, 20, NULL, NULL, 'VIC', NULL, 'Common reef and bay species with tough skin. Good eating when properly prepared.'),
+  ('Elephant Fish', 'Callorhinchus milii', 'saltwater', NULL, 2, NULL, NULL, 'VIC', NULL, 'A distinctive cartilaginous fish related to sharks. Often caught in Port Phillip Bay.'),
+  ('Blue Throat Wrasse', 'Notolabrus tetricus', 'saltwater', NULL, 10, NULL, NULL, 'VIC', NULL, 'Colourful reef fish commonly encountered around rocky reefs and kelp beds.'),
+  ('Pink Snapper', 'Chrysophrys auratus', 'saltwater', 280, 3, NULL, NULL, 'VIC', NULL, 'Juvenile Snapper, sometimes referred to separately by anglers. Same regulations as adult Snapper apply.'),
+  ('Murray Cod', 'Maccullochella peelii', 'freshwater', 550, 2, '2024-09-01', '2024-11-30', 'VIC', NULL, 'Australia''s largest freshwater fish and an iconic native species. Subject to seasonal closures to protect spawning.'),
+  ('Golden Perch', 'Macquaria ambigua', 'freshwater', 300, 5, NULL, NULL, 'VIC', NULL, 'Also known as Yellowbelly. A popular native freshwater sportfish found in the Murray-Darling river system.'),
+  ('Brown Trout', 'Salmo trutta', 'freshwater', 250, 5, NULL, NULL, 'VIC', NULL, 'Introduced trout species widely found in Victorian highland streams and lakes. A prized fly fishing target.'),
+  ('Rainbow Trout', 'Oncorhynchus mykiss', 'freshwater', 250, 5, NULL, NULL, 'VIC', NULL, 'Popular introduced sport fish widely stocked in Victorian lakes and streams.'),
+  ('Redfin Perch', 'Perca fluviatilis', 'freshwater', NULL, NULL, NULL, NULL, 'VIC', NULL, 'Introduced invasive species. No size or bag limits apply — anglers are encouraged to remove and not return this species.'),
+  ('Common Carp', 'Cyprinus carpio', 'freshwater', NULL, NULL, NULL, NULL, 'VIC', NULL, 'Highly invasive introduced species. No bag or size limits. It is illegal to return Carp to the water in Victoria.'),
+  ('Estuary Perch', 'Macquaria colonorum', 'estuarine', 300, 5, NULL, NULL, 'VIC', NULL, 'Native estuarine species found in tidal rivers and coastal lakes. A prized light tackle sportfish.'),
+  ('Luderick', 'Girella tricuspidata', 'estuarine', 250, 10, NULL, NULL, 'VIC', NULL, 'Also known as Blackfish. An estuarine species commonly caught on weed in rivers and along rock walls.'),
+  ('Sea Mullet', 'Mugil cephalus', 'estuarine', NULL, 20, NULL, NULL, 'VIC', NULL, 'Schooling estuarine species common in bays and river mouths. Often used as bait.'),
+  ('Tarwhine', 'Rhabdosargus sarba', 'saltwater', 200, 20, NULL, NULL, 'VIC', NULL, 'A small bream-like species found in bay and estuarine environments. Good eating and popular with family anglers.');

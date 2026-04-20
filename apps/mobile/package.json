@@ -1,7 +1,7 @@
 {
   "name": "mobile",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -15,8 +15,14 @@
   "dependencies": {
     "@bitemap/shared": "workspace:*",
     "@bitemap/ui": "workspace:*",
+    "@supabase/supabase-js": "^2.104.0",
     "expo": "~54.0.33",
+    "expo-auth-session": "^55.0.14",
+    "expo-crypto": "^55.0.14",
+    "expo-router": "^55.0.12",
+    "expo-secure-store": "^55.0.13",
     "expo-status-bar": "~3.0.9",
+    "expo-web-browser": "^55.0.14",
     "nativewind": "^4.0.1",
     "react": "19.1.0",
     "react-native": "0.81.5"

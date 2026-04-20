@@ -11,3 +11,4 @@ coverage
 .vscode/*
 !.vscode/settings.json
 .DS_Store
+.omc/

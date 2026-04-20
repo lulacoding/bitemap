@@ -1,6 +1,14 @@
-# BiteMap Phase 11 — Hardening + Launch (Detailed TDD Plan)
+# BiteMap Phase 11 — Hardening + UX Polish (Detailed TDD Plan)
 
-**Goal:** Ship-readiness. Error monitoring, analytics, rate limiting, accessibility, legal pages, deployment pipelines, app-store listings. Execute spec verification plan end-to-end.
+**Tag:** `v0.15.5-hardening`
+
+**Important:** This phase no longer tags `v1.0.0`. The original Phase 11 plan did, but two hard blockers now sit between this phase and launch:
+1. **Phase 12 — Production Data Integrity Audit** (`v0.16.0-data-audit`)
+2. **Phase 13 — Security Hardening** (`v0.17.0-security`)
+
+Phase 11 focuses on observability, UX polish, content, pipelines, and store-submission prep. The actual v1.0.0 tag happens at the end of Phase 13 once a clean pen-test pass is secured.
+
+**Goal:** Error monitoring, analytics, rate limiting, accessibility, legal pages, deployment pipelines, app-store listings. Execute spec verification plan end-to-end.
 
 **Tech Stack:** Sentry (mobile + web), PostHog (or Supabase analytics), `jest-axe` + Playwright a11y, EAS Build + TestFlight + Play Internal Testing, Vercel.
 
@@ -159,11 +167,108 @@ All 7 must pass on a **TestFlight / Play Internal** build (not local dev).
 
 ---
 
-## Task 11.10 — Tag & Ship
+## Task 11.10 — Tag Phase 11 and hand off to Phase 12
 
-- [ ] `git tag v1.0.0`
-- [ ] Announce to Port Phillip Bay fishing Facebook groups
-- [ ] Monitor Sentry + PostHog for 72 hours
+- [ ] `git tag v0.15.5-hardening`
+- [ ] **Do NOT ship to public app stores yet.** Phase 12 (data audit) and Phase 13 (security) are hard blockers for v1.0.
+- [ ] TestFlight / Play Internal builds are fine for private beta.
+- [ ] Open the Phase 12 plan at `docs/superpowers/plans/2026-04-20-bitemap-phase-12-data-audit.md` and begin the data-audit sweep.
+
+---
+
+## Competitor-gap injects (MUST SHIP in this release)
+
+Merged from `docs/superpowers/plans/2026-04-20-bitemap-competitor-gap-backlog.md`.
+
+### Task 11.11 — Video-based onboarding tutorials
+
+**Competitor reference:** Omnia Fishing, Smart Fishing Spots, onX Fish.
+
+- [ ] 3 short (≤30s each) in-app video clips:
+  - Logging your first catch
+  - Using offline mode / reconnection
+  - Privacy settings (exact / area / hidden)
+- [ ] Host on Supabase Storage bucket `onboarding-videos/` (public-read) or YouTube unlisted with fallback.
+- [ ] First-run: auto-play the "first catch" video on the post-signup landing; subsequent two play on natural contextual triggers (first offline queue, first time opening privacy setting).
+- [ ] Skip + "don't show again" persisted per profile.
+- [ ] Content production effort > engineering. Budget 2 days filming.
+
+### Task 11.12 — Shark / marine-hazard alert layer
+
+**Competitor reference:** SharkSmart, Dorsal, SafeWaters.ai.
+
+- [ ] Edge Function `fetch-marine-hazards`: polls SharkSmart NSW (official feed), Dorsal (community crowdsourced), BOM small-craft warnings. Normalises into a single `marine_hazards` table:
+  ```sql
+  create table public.marine_hazards (
+    id uuid primary key default uuid_generate_v4(),
+    source text not null check (source in ('sharksmart_nsw','dorsal','bom')),
+    kind text not null,     -- 'shark_sighting','strong_current','warning','rip'...
+    lat double precision,
+    lng double precision,
+    radius_km numeric(6,2),
+    title text,
+    details text,
+    fetched_at timestamptz default now(),
+    expires_at timestamptz default (now() + interval '14 days')
+  );
+  ```
+- [ ] Cron: every 15 min.
+- [ ] Map overlay: discrete amber band for warnings, red dot for sightings. Tap → detail card with source + freshness timestamp.
+- [ ] Auto-expire at 14 days to avoid stale panic.
+- [ ] Port Phillip specific: VIC doesn't have an official SharkSmart feed yet — show BOM + Dorsal only. Document gap.
+
+### Task 11.13 — Offline map tile download
+
+**Competitor reference:** AllTrails offline parks, OnX Hunt, FishTrack, iNaturalist.
+
+- [ ] User picks a region (zoom 8 to zoom 14) → Mapbox Offline Regions API downloads tile pack (~20-50 MB per region).
+- [ ] Persisted in mobile app storage; 5 regions max per user.
+- [ ] Rate limit: 1 download per region per 30 days to keep Mapbox tile costs bounded.
+- [ ] Settings screen shows downloaded regions + size + "Delete" button.
+- [ ] Full offline catch flow (not just queue) works within downloaded regions — map renders, existing cached catches render, new catches enqueue. Web: deferred (desktop usage patterns differ).
+
+### Task 11.14 — Regulatory-data annual refresh job (cross-cutting)
+
+**Source:** competitor-gap backlog "cross-cutting" bullet.
+
+- [ ] Supabase cron `regs-annual-refresh`: runs Dec 1 each year.
+- [ ] Pulls latest VFA + NSW DPI + QLD Fisheries public data (manual URLs listed in the migration).
+- [ ] Diffs against `species_regulations`; upserts changed rows; marks affected species.
+- [ ] In-app banner for affected users on next launch: "Fishing regulations updated for VIC on Dec 1, 2026 — review changes on [species]." (retained 14 days then auto-clears.)
+
+### Task 11.15 — Free-forever audit (cross-cutting release checklist)
+
+**Source:** competitor-gap backlog "cross-cutting" bullet.
+
+Before every release tag, run the following checklist and commit the result as `docs/qa/free-forever-audit-{tag}.md`:
+- [ ] Every core feature (map, catch report, species, tide, leaderboard, profile) is fully available with zero payment.
+- [ ] No Pro-only feature rendered as a locked UI affordance anywhere in the app.
+- [ ] Any paid surface (merch shop, affiliate links, guide booking) is clearly separated from the feature chrome.
+- [ ] The "Settings → About" screen lists the free-forever commitment verbatim.
+
+---
+
+## Phase 11 Acceptance
+
+Core:
+- [ ] All 7 spec-verification items pass on TestFlight + Play Internal builds
+- [ ] Sentry reports zero unhandled errors on 30-min smoke
+- [ ] Rate-limit test passes
+- [ ] Playwright axe: zero violations
+- [ ] Legal pages live + linked from Settings
+- [ ] Vercel production deploy green
+- [ ] TestFlight build installable + catch flow succeeds end-to-end
+
+Gap injects:
+- [ ] 3 onboarding videos play inline (skip + don't-show-again persist)
+- [ ] Marine-hazard layer toggles on map; BOM warnings render; stale data auto-expires at 14d
+- [ ] Offline map tile download + full offline catch logging verified in airplane mode
+- [ ] Regulatory refresh cron dry-run succeeds (test mode against fixture data)
+- [ ] Free-forever audit checklist committed
+
+Release:
+- [ ] `v0.15.5-hardening` tag pushed
+- [ ] Phase 12 (data audit) plan opened
 
 ---
 

@@ -1,6 +1,8 @@
-# BiteMap Phase 8 — Profiles (Detailed TDD Plan)
+# BiteMap Phase 8 — Profiles + Personal Analytics (Detailed TDD Plan)
 
-**Goal:** Public + private profile screens. Edit profile, avatar upload, private logbook view.
+**Tag:** `v0.13.0-profiles`
+
+**Goal:** Public + private profile screens. Edit profile, avatar upload, private logbook view. Plus the competitor-gap injects: bag-limit counter, CSV export, correlation cards, personal-best context, photo backup.
 
 **Tech Stack:** `expo-image-picker`, `expo-image-manipulator`, Supabase Storage `avatars` bucket, `@tanstack/react-query`.
 
@@ -198,8 +200,101 @@ export default function EditProfile() {
 
 ---
 
+---
+
+## Competitor-gap injects (MUST SHIP in this release)
+
+Merged from `docs/superpowers/plans/2026-04-20-bitemap-competitor-gap-backlog.md`. Every item below ships in `v0.13.0-profiles` alongside core Phase 8 work.
+
+### Task 8.8 — Bag-limit catch counter + auto-alerts
+
+**Competitor reference:** FishVerify, Fish Washington, onX Fish.
+
+**Depends on:** `profiles.home_state` (shipped Phase 7) and `species_regulations` (shipped Phase 7).
+
+- [ ] Today's session counter component (`src/profile/SessionCounter.tsx`): groups user's catches by species_id WHERE `created_at >= date_trunc('day', now())` and compares running count against `species_regulations.bag_limit` for the user's `home_state`.
+- [ ] Visual states per species:
+  - 0-79% of limit: neutral grey row
+  - 80-99%: amber background + warning icon
+  - 100%: red background + "⚠ Bag limit reached for VIC — release further catches"
+- [ ] Surface the counter on two screens:
+  1. Map home: collapsible card pinned below filter bar whenever any species has count ≥ 1 today
+  2. Catch report screen: small inline readout below the species picker ("You've logged 4/5 flathead today")
+- [ ] Clear disclaimer card: "Check the VFA guide before releasing. BiteMap is a guide, not legal advice."
+- [ ] Respect state-aware regulations: if user's `home_state = 'NSW'`, counter checks NSW limits.
+
+### Task 8.9 — CSV export + email delivery
+
+**Competitor reference:** Reelback, CatchStats, Anglers' Log.
+
+- [ ] Supabase Edge Function `export-my-data`:
+  1. Authenticate caller via JWT
+  2. SQL join every table user owns (profile, catches, saved_spots, comments, follows)
+  3. Render 1 CSV per table + a README.txt describing schema + column meaning + retention policy
+  4. Zip → upload to Storage `user-exports/{user_id}/{uuid}.zip` (7-day signed URL)
+  5. Email via Resend with download link (Settings stores user's verified email)
+- [ ] "Export my data" button in Settings → calls the Edge Function; shows "Check your email in 2 minutes."
+- [ ] Rate limit: 1 export per user per 24 hours.
+
+### Task 8.10 — Personal analytics dashboard
+
+**Competitor reference:** CatchStats, Anglers' Log.
+
+- [ ] New screen `apps/{mobile,web}/app/(app)/stats/…`:
+  - Big number: total catches (all-time)
+  - Big number: distinct species caught
+  - Pie chart: catches by species (top 10 + "Other")
+  - Bar chart: catches per month (last 12)
+  - PB per species: table showing largest `size_mm` per species with date + conditions
+  - Hotspot mini-map: scatter of owner's own catch locations (shown at `exact` even if publicly `area`)
+- [ ] Pure SQL rollups in Supabase views (no client-side aggregation). Views restricted to `auth.uid()` via RLS.
+
+### Task 8.11 — Personal-best record context
+
+**Source:** gap 3.7 / 3.8 "real-time correlation cards" + PB context.
+
+- [ ] On each species PB card, show the exact conditions of that catch:
+  - Tide state + height at `created_at`
+  - Weather (temp, wind, pressure trend)
+  - Moon phase + solunar rating
+  - Bait + technique
+- [ ] Re-fish CTA button: "Log another {species} catch" with those conditions pre-populated into the report form (bait, technique pre-filled).
+
+### Task 8.12 — Real-time catch-condition correlation cards
+
+**Competitor reference:** Bite Signal, Fishero, ANGLR Pro.
+
+- [ ] After N ≥ 50 catches logged by the user, surface insight cards on the stats screen:
+  - "You catch more flathead on falling tide + air temp > 20°C" (N=18 in this bucket, 75% of your flathead)
+  - "Neap-tide drift works best for you" (avg 2.3 catches/trip vs. 1.1 on spring tides)
+- [ ] Simple SQL bucket grouping; NOT ML. Each insight renders:
+  - The pattern in plain English
+  - Sample size (N)
+  - Confidence ("75% of your flathead")
+- [ ] Explicit "Low-N, take with a grain of salt" badge when N < 20 in any bucket.
+
+### Task 8.13 — Photo cloud backup + auto-compression
+
+**Competitor reference:** Deeper, FishAngler.
+
+- [ ] Opt-in toggle in Settings: "Back up my catch photos to BiteMap cloud."
+- [ ] Client-side compression already targets ≤ 500 KB (scheduled in v0.10.1). Backup upload uses the same Storage bucket (`catch-photos`).
+- [ ] If toggle off: photos stay device-local and expire with the 48h catch decay (photo reference dropped).
+- [ ] If toggle on: photos persist in Storage keyed `catch-photos/{user_id}/{client_uuid}.jpg`. User deletes account → photos purged (cascade).
+
+### Task 8.14 — Accessibility audit (cross-cutting rule)
+
+Every new card, screen, or button added in Phase 8 must pass:
+- [ ] WCAG AA contrast
+- [ ] Minimum 44×44 pt tap targets
+- [ ] `prefers-reduced-motion` respected
+- [ ] Every Pressable has `accessibilityLabel` + `accessibilityRole`
+
+---
+
 ## Phase 8 Acceptance
 
+Core:
 - [ ] Update own username → stored in DB
 - [ ] Attempt duplicate username → DB error surfaced as friendly UX
 - [ ] Upload avatar → `avatar_url` column updated; Storage object exists
@@ -208,4 +303,14 @@ export default function EditProfile() {
 - [ ] Own logbook shows hidden catches; other viewer's view does not
 - [ ] E2E: tap map pin → view profile works
 - [ ] Web parity for all above
-- [ ] Tag `v0.8.0-profiles`
+
+Gap injects:
+- [ ] Bag-limit counter renders, respects `home_state`, shows amber + red tiers, disclaimer visible
+- [ ] CSV export delivers via email with a signed URL; rate-limited to 1/day
+- [ ] Personal stats dashboard loads; pie + bar charts render; PB table correct
+- [ ] PB card shows the exact conditions of the PB catch; "re-fish" CTA pre-populates report
+- [ ] Correlation insight cards appear once user hits 50 catches
+- [ ] Photo backup toggle persists; honours opt-in/out
+
+Release:
+- [ ] Tag `v0.13.0-profiles`

@@ -21,10 +21,12 @@
 | 5a | Catch reporting extras (offline queue, photo upload, Edge Function) | v0.10.1-catch-extras | DEFERRED |
 | 6 | Weather + tide (Open-Meteo) + pressure trend + swell + solunar feed times | v0.11.0-weather | DONE |
 | 7 | Filters + heatmap + state-aware regs + marine parks | v0.12.0-filters | DONE |
-| 8 | Profiles | v0.13.0-profiles | IN PROGRESS |
-| 9 | Social | v0.14.0-social | PENDING |
-| 10 | Leaderboard | v0.15.0-leaderboard | PENDING |
-| 11 | Hardening & UX polish | v0.15.5-hardening | PENDING |
+| 7.5 | POI layer: boat ramps, bait shops, fuel, jetties + tide thresholds | v0.12.5-pois | PENDING |
+| 8 | Profiles + bag-limit counter + CSV export + analytics + correlation cards | v0.13.0-profiles | IN PROGRESS |
+| 9 | Social + live trips + DMs + verified-guide peer review + reputation | v0.14.0-social | PENDING |
+| 10 | Leaderboard + rare-catch alerts + expert IDs + Claude Vision + XP | v0.15.0-leaderboard | PENDING |
+| 10.5 | Citizen Science (optional — criteria-gated) | v0.15.25-citizen-science | OPTIONAL |
+| 11 | Hardening & UX polish + onboarding videos + shark alerts + offline tiles | v0.15.5-hardening | PENDING |
 | **12** | **Production data integrity audit (no mocks, real data everywhere)** | **v0.16.0-data-audit** | **PENDING — blocks 13** |
 | **13** | **Security hardening (cybersecurity audit + pen-test)** | **v0.17.0-security** | **PENDING — blocks v1.0** |
 | 14 | v1.0.0 launch | v1.0.0 | PENDING |

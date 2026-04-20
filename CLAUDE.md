@@ -42,6 +42,12 @@ supabase test db               # run pgTAP tests
 See `docs/superpowers/plans/` for detailed TDD plans per phase.
 Current progress tracked in `.claude/context/status.md`.
 
+**Pre-launch blockers (no exceptions):**
+1. **Phase 12 — Production Data Audit** (`v0.16.0-data-audit`): zero mock/placeholder/TODO in shipping code. Every screen hits real data.
+2. **Phase 13 — Security Hardening** (`v0.17.0-security`): RLS audit, server-side privacy snap, rate limits, CSP, pen-test pass.
+
+Both must tag green before v1.0.0.
+
 Competitor-parity enhancements layered on top of each phase:
 - `docs/superpowers/design/bitemap-competitor-gap-analysis.md` (research + sources)
 - `docs/superpowers/plans/2026-04-20-bitemap-competitor-gap-backlog.md` (actionable backlog)

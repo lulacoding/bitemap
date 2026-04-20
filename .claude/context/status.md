@@ -24,7 +24,10 @@
 | 8 | Profiles | v0.13.0-profiles | IN PROGRESS |
 | 9 | Social | v0.14.0-social | PENDING |
 | 10 | Leaderboard | v0.15.0-leaderboard | PENDING |
-| 11 | Hardening + launch | v1.0.0 | PENDING |
+| 11 | Hardening & UX polish | v0.15.5-hardening | PENDING |
+| **12** | **Production data integrity audit (no mocks, real data everywhere)** | **v0.16.0-data-audit** | **PENDING — blocks 13** |
+| **13** | **Security hardening (cybersecurity audit + pen-test)** | **v0.17.0-security** | **PENDING — blocks v1.0** |
+| 14 | v1.0.0 launch | v1.0.0 | PENDING |
 
 ---
 
@@ -35,14 +38,18 @@ None yet — no device testing done.
 ## Known Risks
 
 - Mapbox tokens not yet configured (need account + token)
-- Supabase is local Docker only — hosted migration deferred to Phase 11
+- Supabase is local Docker only — hosted migration happens in Phase 11 hardening
 - E2E tests (Detox/Playwright) deferred to Phase 11
 - Storybook install deferred to Phase 11
-- **Phase 5 deferred to v0.10.1-catch-extras:** server-side privacy snap (Edge Function),
-  offline queue (AsyncStorage + NetInfo), photo upload (expo-image-picker + Storage).
-  Current: client-side privacy snap only; direct Supabase INSERT from `createCatch`.
-  Risk: a malicious client could send `privacy_level='area'` with raw GPS. Needs trigger
-  or Edge Function to enforce server-side.
+- **Phase 5 deferred to v0.10.1-catch-extras:** offline queue (AsyncStorage + NetInfo), photo upload (expo-image-picker + Storage).
+  Server-side privacy snap is now formally scheduled as Task 13.2 in Phase 13 Security.
+- **Phase 6 deferred to v0.11.1-enrichment-apis:** BOM marine warnings overlay,
+  suncalc-based lunar ephemeris for precise moonrise/moonset solunar times.
+- **Phase 12 (data audit) is a HARD blocker before Phase 13.**
+  Any mock data still rendered in production = v1.0 cannot tag.
+- **Phase 13 (security) is a HARD blocker before v1.0.0.**
+  Plan: `docs/superpowers/plans/2026-04-20-bitemap-phase-13-security.md`.
+  No exceptions — pen-test pass required.
 
 ---
 

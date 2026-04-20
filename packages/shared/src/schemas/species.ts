@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const speciesCategorySchema = z.enum(['saltwater', 'freshwater', 'estuarine', 'pelagic', 'other']);
 
 export const speciesSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   common_name: z.string().min(1),
   scientific_name: z.string().nullable(),
   category: speciesCategorySchema,

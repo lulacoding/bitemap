@@ -9,6 +9,7 @@ import {
   PORT_PHILLIP_BAY_CENTER,
   type FeedItem,
 } from '@bitemap/shared';
+import { webCapture } from '@/telemetry/posthogWeb';
 
 type Tab = 'following' | 'nearby';
 
@@ -18,6 +19,10 @@ export default function FeedPage() {
     PORT_PHILLIP_BAY_CENTER[1],
     PORT_PHILLIP_BAY_CENTER[0],
   ]);
+
+  useEffect(() => {
+    webCapture('feed_opened', { platform: 'web' });
+  }, []);
 
   useEffect(() => {
     if (!navigator.geolocation) return;

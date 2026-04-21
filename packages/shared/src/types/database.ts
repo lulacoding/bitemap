@@ -416,7 +416,10 @@ export type Database = {
           is_verified: boolean
           location: string | null
           photo_backup_enabled: boolean
+          streak_days: number
+          streak_last_catch: string | null
           username: string
+          xp: number
         }
         Insert: {
           avatar_url?: string | null
@@ -429,7 +432,10 @@ export type Database = {
           is_verified?: boolean
           location?: string | null
           photo_backup_enabled?: boolean
+          streak_days?: number
+          streak_last_catch?: string | null
           username: string
+          xp?: number
         }
         Update: {
           avatar_url?: string | null
@@ -442,7 +448,10 @@ export type Database = {
           is_verified?: boolean
           location?: string | null
           photo_backup_enabled?: boolean
+          streak_days?: number
+          streak_last_catch?: string | null
           username?: string
+          xp?: number
         }
         Relationships: []
       }
@@ -546,10 +555,13 @@ export type Database = {
           common_name: string
           created_at: string
           description: string | null
+          family: string | null
           id: string
           image_url: string | null
+          iucn_status: string | null
           min_legal_size_mm: number | null
           scientific_name: string | null
+          species_order: string | null
           state: string | null
         }
         Insert: {
@@ -560,10 +572,13 @@ export type Database = {
           common_name: string
           created_at?: string
           description?: string | null
+          family?: string | null
           id?: string
           image_url?: string | null
+          iucn_status?: string | null
           min_legal_size_mm?: number | null
           scientific_name?: string | null
+          species_order?: string | null
           state?: string | null
         }
         Update: {
@@ -574,13 +589,48 @@ export type Database = {
           common_name?: string
           created_at?: string
           description?: string | null
+          family?: string | null
           id?: string
           image_url?: string | null
+          iucn_status?: string | null
           min_legal_size_mm?: number | null
           scientific_name?: string | null
+          species_order?: string | null
           state?: string | null
         }
         Relationships: []
+      }
+      species_rarity: {
+        Row: {
+          catch_count_90d: number
+          notes: string | null
+          rarity_tier: string
+          region: string
+          species_id: string
+        }
+        Insert: {
+          catch_count_90d?: number
+          notes?: string | null
+          rarity_tier?: string
+          region: string
+          species_id: string
+        }
+        Update: {
+          catch_count_90d?: number
+          notes?: string | null
+          rarity_tier?: string
+          region?: string
+          species_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "species_rarity_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "species"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       species_regulations: {
         Row: {
@@ -1038,6 +1088,7 @@ export type Database = {
         Returns: number
       }
       refresh_leaderboards: { Args: never; Returns: undefined }
+      refresh_species_rarity_counts: { Args: never; Returns: undefined }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
       st_3dclosestpoint: {

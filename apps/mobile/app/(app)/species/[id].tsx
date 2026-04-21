@@ -11,9 +11,17 @@ import { useQuery } from '@tanstack/react-query';
 import {
   getSpeciesById,
   getRegulationsForSpecies,
+  getSpeciesRarity,
   type SpeciesRegulation,
 } from '@bitemap/shared';
 import { colors } from '@bitemap/ui';
+
+const RARITY_COLOR: Record<string, string> = {
+  common: '#64748b',
+  uncommon: '#0E5C8A',
+  rare: '#E4572E',
+  extraordinary: '#b91c1c',
+};
 
 export default function SpeciesDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -31,6 +39,12 @@ export default function SpeciesDetailScreen() {
     enabled: !!id,
   });
 
+  const { data: rarity } = useQuery({
+    queryKey: ['species-rarity', id],
+    queryFn: () => getSpeciesRarity(id, 'port_phillip'),
+    enabled: !!id,
+  });
+
   if (isLoading) return <ActivityIndicator style={{ flex: 1 }} />;
   if (!species) return <Text style={s.notFound}>Species not found</Text>;
 
@@ -41,8 +55,27 @@ export default function SpeciesDetailScreen() {
         {species.scientific_name && (
           <Text style={s.sci}>{species.scientific_name}</Text>
         )}
-        <View style={s.chip}>
-          <Text style={s.chipText}>{species.category}</Text>
+        <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
+          <View style={s.chip}>
+            <Text style={s.chipText}>{species.category}</Text>
+          </View>
+          {rarity && (
+            <View
+              style={[
+                s.chip,
+                { backgroundColor: (RARITY_COLOR[rarity.rarity_tier] ?? '#64748b') + '22' },
+              ]}
+            >
+              <Text
+                style={[
+                  s.chipText,
+                  { color: RARITY_COLOR[rarity.rarity_tier] ?? '#64748b' },
+                ]}
+              >
+                {rarity.rarity_tier} · {rarity.catch_count_90d} in 90d
+              </Text>
+            </View>
+          )}
         </View>
       </View>
 

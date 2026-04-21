@@ -10,14 +10,31 @@ export default async function SpeciesDetailPage({
   const { id } = await params;
   const supabase = await createSupabaseServerClient();
 
-  const [{ data: species }, { data: regs }] = await Promise.all([
+  const [
+    { data: species },
+    { data: regs },
+    { data: rarity },
+  ] = await Promise.all([
     supabase.from('species').select('*').eq('id', id).maybeSingle(),
     supabase.from('species_regulations').select('*').eq('species_id', id).order('state'),
+    supabase
+      .from('species_rarity')
+      .select('*')
+      .eq('species_id', id)
+      .eq('region', 'port_phillip')
+      .maybeSingle(),
   ]);
 
   if (!species) notFound();
 
   const regulations = regs ?? [];
+
+  const RARITY_CLASS: Record<string, string> = {
+    common: 'bg-gray-100 text-gray-700',
+    uncommon: 'bg-blue-100 text-blue-700',
+    rare: 'bg-orange-100 text-orange-700',
+    extraordinary: 'bg-red-100 text-red-700',
+  };
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
@@ -33,9 +50,30 @@ export default async function SpeciesDetailPage({
           {species.scientific_name}
         </p>
       )}
-      <span className="mt-3 inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-        {species.category}
-      </span>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+          {species.category}
+        </span>
+        {rarity && (
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-semibold ${
+              RARITY_CLASS[rarity.rarity_tier] ?? 'bg-gray-100 text-gray-700'
+            }`}
+          >
+            {rarity.rarity_tier} · {rarity.catch_count_90d} in 90d
+          </span>
+        )}
+        {species.family && (
+          <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">
+            Family: {species.family}
+          </span>
+        )}
+        {species.iucn_status && (
+          <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">
+            IUCN: {species.iucn_status}
+          </span>
+        )}
+      </div>
 
       <div className="mt-8 rounded-xl bg-gray-50 p-6">
         <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-gray-500">

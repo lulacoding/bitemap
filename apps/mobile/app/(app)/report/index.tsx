@@ -14,6 +14,8 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import {
   createCatch,
   getSpeciesById,
+  getSpeciesRarity,
+  shouldNotifyRareCatch,
   listSpecies,
   listMarineParks,
   parksContainingPoint,
@@ -65,8 +67,28 @@ export default function ReportCatchScreen() {
 
   const mutation = useMutation({
     mutationFn: createCatch,
-    onSuccess: () => {
+    onSuccess: async (created) => {
       qc.invalidateQueries({ queryKey: ['catches'] });
+      qc.invalidateQueries({ queryKey: ['my-xp'] });
+
+      // Rare-catch notification
+      try {
+        const rarity = await getSpeciesRarity(
+          created.species_id,
+          'port_phillip',
+        );
+        if (shouldNotifyRareCatch(rarity)) {
+          Alert.alert(
+            '🌟 Rare catch!',
+            `${rarity?.rarity_tier === 'extraordinary' ? 'Extraordinary' : 'Rare'} species for Port Phillip. You've contributed to citizen science — thank you.`,
+            [{ text: 'Back to map', onPress: () => router.replace('/(app)') }],
+          );
+          return;
+        }
+      } catch {
+        // non-fatal; fall through to the standard success alert
+      }
+
       Alert.alert('Catch logged!', 'Your catch is now on the map.', [
         { text: 'View map', onPress: () => router.replace('/(app)') },
       ]);

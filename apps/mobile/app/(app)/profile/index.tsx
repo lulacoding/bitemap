@@ -13,6 +13,9 @@ import { useRouter } from 'expo-router';
 import {
   getMyProfile,
   getLogbook,
+  getMyXp,
+  xpTier,
+  xpToNextTier,
   supabase,
 } from '@bitemap/shared';
 import { colors } from '@bitemap/ui';
@@ -29,6 +32,12 @@ export default function MyProfileScreen() {
     queryKey: ['my-logbook', profile.data?.id],
     queryFn: () => (profile.data ? getLogbook(profile.data.id, 100) : []),
     enabled: !!profile.data,
+  });
+
+  const xp = useQuery({
+    queryKey: ['my-xp'],
+    queryFn: getMyXp,
+    staleTime: 30 * 1000,
   });
 
   const stats = useMemo(() => {
@@ -85,6 +94,27 @@ export default function MyProfileScreen() {
           <Text style={s.statLabel}>species</Text>
         </View>
       </View>
+
+      {xp.data && (
+        <View style={s.xpRow}>
+          <View style={s.xpTierBadge}>
+            <Text style={s.xpTierText}>{xpTier(xp.data.xp)}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={s.xpValue}>{xp.data.xp.toLocaleString()} XP</Text>
+            <Text style={s.xpMeta}>
+              {xp.data.streak_days > 0
+                ? `${xp.data.streak_days}-day streak 🔥`
+                : 'No active streak — log a catch today to start one.'}
+            </Text>
+            {xpToNextTier(xp.data.xp) > 0 && (
+              <Text style={s.xpMeta}>
+                {xpToNextTier(xp.data.xp).toLocaleString()} XP to next tier
+              </Text>
+            )}
+          </View>
+        </View>
+      )}
 
       <View style={s.actions}>
         <Pressable
@@ -242,4 +272,22 @@ const s = StyleSheet.create({
     color: '#374151',
     textTransform: 'uppercase',
   },
+  xpRow: {
+    flexDirection: 'row',
+    gap: 14,
+    backgroundColor: '#fef3c7',
+    borderRadius: 12,
+    padding: 14,
+    marginVertical: 6,
+    alignItems: 'center',
+  },
+  xpTierBadge: {
+    backgroundColor: '#f59e0b',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  xpTierText: { color: '#fff', fontWeight: '700', fontSize: 13 },
+  xpValue: { fontSize: 18, fontWeight: '700', color: '#111' },
+  xpMeta: { fontSize: 12, color: '#b45309', marginTop: 2 },
 });

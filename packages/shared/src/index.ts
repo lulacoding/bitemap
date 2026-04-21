@@ -176,3 +176,20 @@ export {
   compareLeaderboardRows,
   type LeaderboardRow,
 } from './queries/leaderboards';
+export {
+  xpTier,
+  xpToNextTier,
+  getMyXp,
+  xpProfileSchema,
+  type XpTier,
+  type XpProfile,
+} from './queries/xp';
+export {
+  rarityTierSchema,
+  speciesRaritySchema,
+  getSpeciesRarity,
+  listSpeciesByRarity,
+  shouldNotifyRareCatch,
+  type RarityTier,
+  type SpeciesRarity,
+} from './queries/rarity';

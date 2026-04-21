@@ -204,6 +204,48 @@ export type Database = {
           },
         ]
       }
+      marine_hazards: {
+        Row: {
+          details: string | null
+          expires_at: string | null
+          fetched_at: string | null
+          id: string
+          kind: string
+          lat: number | null
+          lng: number | null
+          radius_km: number | null
+          severity: string
+          source: string
+          title: string
+        }
+        Insert: {
+          details?: string | null
+          expires_at?: string | null
+          fetched_at?: string | null
+          id?: string
+          kind: string
+          lat?: number | null
+          lng?: number | null
+          radius_km?: number | null
+          severity?: string
+          source: string
+          title: string
+        }
+        Update: {
+          details?: string | null
+          expires_at?: string | null
+          fetched_at?: string | null
+          id?: string
+          kind?: string
+          lat?: number | null
+          lng?: number | null
+          radius_km?: number | null
+          severity?: string
+          source?: string
+          title?: string
+        }
+        Relationships: []
+      }
       marine_parks: {
         Row: {
           bbox_max_lat: number

@@ -145,6 +145,12 @@ export default function MyProfileScreen() {
           <Text style={s.btnText}>Terms of use</Text>
         </Pressable>
         <Pressable
+          style={s.btn}
+          onPress={() => router.push('/(app)/offline-tiles')}
+        >
+          <Text style={s.btnText}>Offline Maps</Text>
+        </Pressable>
+        <Pressable
           style={[s.btn, s.btnDanger]}
           onPress={() =>
             Alert.alert('Sign out?', '', [

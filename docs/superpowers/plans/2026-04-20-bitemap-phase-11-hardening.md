@@ -110,7 +110,7 @@ test('61 reports in one minute: 61st rejected', async () => {
 
 ## Task 11.6 — Deployment Pipelines
 
-- [ ] **Web:** Vercel project linked; `main` auto-deploys to production; PRs deploy preview (operator-owned; `apps/web/vercel.json` sets monorepo install/build).
+- [x] **Web:** Vercel project linked — production **https://bitemap-joz2xyiia-lulacodings-projects.vercel.app** (`main` deploys; `apps/web/vercel.json` sets monorepo install/build). PR previews: confirm enabled in Vercel project settings.
 - [x] **Mobile:** EAS Build profiles — `development`, `preview`, `production` in `apps/mobile/eas.json` (CLI ≥ 16; `appVersionSource: remote`). Profiles differ slightly from the sketch below — keep `eas.json` as source of truth.
 - [ ] **Submit:** `eas submit --platform ios` (TestFlight), `--platform android` (Play Internal Testing).
 

@@ -26,11 +26,21 @@
 | 9 | Social core (likes, comments, follows, feed) | v0.14.0-social | DONE |
 | 10 | Leaderboard core | v0.15.0-leaderboard | DONE |
 | 10.5 | Citizen Science (optional — criteria-gated) | v0.15.25-citizen-science | OPTIONAL |
-| 11 | Hardening & UX polish + onboarding videos + shark alerts + offline tiles | v0.15.5-hardening | **IN PROGRESS** — 11.1 Sentry + 11.6 EAS config shipped; Vercel is user-linked; PostHog / legal / a11y / gap injects open |
+| 11 | Hardening & UX polish + onboarding videos + shark alerts + offline tiles | v0.15.5-hardening | **IN PROGRESS** — 11.1 Sentry + 11.6 EAS in repo; **Vercel production live**; PostHog / legal / a11y / gap injects open |
 | **12** | **Production data integrity audit (no mocks, real data everywhere)** | **v0.16.0-data-audit** | **DONE (core sweep) — device walkthrough still pending** |
 | **13** | **Security hardening (cybersecurity audit + pen-test)** | **v0.17.0-security** | **DONE (technical core); external pen-test pending** |
 | 14 | v1.0.0-rc1 launch candidate | v1.0.0-rc1 | DONE |
-| 15 | v1.0.0 launch | v1.0.0 | **BLOCKED on Phase 11 finish + external pen-test** (Sentry/EAS wired in repo; Vercel deploy is operator-owned) |
+| 15 | v1.0.0 launch | v1.0.0 | **BLOCKED on Phase 11 finish + external pen-test** |
+
+---
+
+## Deployed environments
+
+| Surface | URL / notes |
+|---------|-------------|
+| **Web (Vercel production)** | https://bitemap-joz2xyiia-lulacodings-projects.vercel.app |
+| Supabase Auth | Add the Vercel origin to **Site URL** (if primary) and **Redirect URLs** in the hosted project dashboard. |
+| Mapbox token URL allowlist | Include `https://bitemap-joz2xyiia-lulacodings-projects.vercel.app` (no `*` wildcards). |
 
 ---
 
@@ -40,7 +50,7 @@ None yet — no device testing done.
 
 ## Known Risks
 
-- Mapbox: keep **URL restrictions** aligned with every deployed web origin (Vercel + localhost); separate token for native if Referer-less requests break maps
+- Mapbox: keep **URL restrictions** aligned with **production** (`https://bitemap-joz2xyiia-lulacodings-projects.vercel.app`) + **localhost**; separate token for native if Referer-less requests break maps
 - Hosted Supabase in use for dogfooding — rotate anon key if leaked; RLS remains authoritative
 - E2E tests (Detox/Playwright) still **Phase 11** deliverables
 - Storybook install deferred to Phase 11
@@ -48,11 +58,7 @@ None yet — no device testing done.
   Server-side privacy snap is now formally scheduled as Task 13.2 in Phase 13 Security.
 - **Phase 6 deferred to v0.11.1-enrichment-apis:** BOM marine warnings overlay,
   suncalc-based lunar ephemeris for precise moonrise/moonset solunar times.
-- **Phase 12 (data audit) is a HARD blocker before Phase 13.**
-  Any mock data still rendered in production = v1.0 cannot tag.
-- **Phase 13 (security) is a HARD blocker before v1.0.0.**
-  Plan: `docs/superpowers/plans/2026-04-20-bitemap-phase-13-security.md`.
-  No exceptions — pen-test pass required.
+- **Phases 12–13 (data audit + security) are DONE in-repo**; ongoing: device walkthrough (12), external pen-test sign-off (13).
 
 ---
 

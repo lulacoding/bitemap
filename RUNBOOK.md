@@ -38,6 +38,12 @@ Open http://localhost:3000
 Sign up → check the Supabase Studio Inbucket tab (http://localhost:54324)
 for the confirmation email, click the link, you're in.
 
+## Production web (Vercel)
+
+Deployed app: https://bitemap-joz2xyiia-lulacodings-projects.vercel.app
+
+Use the same `NEXT_PUBLIC_*` env vars in the Vercel project as in `apps/web/.env.local`. In **Supabase → Authentication → URL configuration**, add this origin to **Redirect URLs** (and set **Site URL** to it if production is the primary entry). In **Mapbox → token URL restrictions**, allow this exact origin (wildcards are not supported).
+
 ## Run the mobile app (iOS simulator)
 
 ```bash

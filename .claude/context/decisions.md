@@ -1,10 +1,18 @@
 # BiteMap — Architectural Decisions
 
+## 2026-04-21 — Phase 11 deferred on infra, not cancelled
+
+**Decision:** Treat Phase 11 (hardening) as **paused** until Vercel, Sentry, and EAS were provisioned; resume once those accounts exist. Phases 12–13 and rc tags proceeded on technical merit; Phase 11 acceptance (videos, hazards, offline tiles, etc.) remains **open work**, not skipped permanently.
+
+**Why:** The plan bundles operator-owned services with large feature injects; blocking all engineering on dashboard clicks was wasteful.
+
+---
+
 ## 2026-04-20 — Local Supabase for development
 
-**Decision:** Use local Docker Supabase stack for all development. Hosted migration via `supabase link + supabase db push` deferred to Phase 11.
+**Decision:** Use local Docker Supabase stack for primary development; **hosted** Supabase optional for dogfooding (link + `db push` when ready).
 
-**Why:** Faster iteration, no network dependency, free. Production hosting decision can wait.
+**Why:** Faster iteration locally; hosted stack for real-device and Vercel preview without tunneling localhost.
 
 ---
 

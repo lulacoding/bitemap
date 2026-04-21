@@ -10,6 +10,8 @@ Phase 11 focuses on observability, UX polish, content, pipelines, and store-subm
 
 **Goal:** Error monitoring, analytics, rate limiting, accessibility, legal pages, deployment pipelines, app-store listings. Execute spec verification plan end-to-end.
 
+**Infra gate (resolved in-repo, Apr 2026):** Phase 11 was intentionally **paused** until operators had Vercel + Sentry + EAS accounts. Sentry (`@sentry/nextjs` + `@sentry/react-native`), `eas.json`, and Dependabot are now in the repo — **resume Phase 11** for PostHog, legal, a11y, remaining gap injects, and tagged verification.
+
 **Tech Stack:** Sentry (mobile + web), PostHog (or Supabase analytics), `jest-axe` + Playwright a11y, EAS Build + TestFlight + Play Internal Testing, Vercel.
 
 ---
@@ -38,10 +40,11 @@ eas.json
 
 ## Task 11.1 — Sentry Wiring
 
-- [ ] **Mobile:** install `sentry-expo`, init in `App.tsx`; capture unhandled JS + native crashes; sourcemaps uploaded via EAS post-build hook.
-- [ ] **Web:** `@sentry/nextjs`, `sentry.client.config.ts`, `sentry.server.config.ts`; tunnel route to avoid ad-block.
-- [ ] Env: `EXPO_PUBLIC_SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`.
-- [ ] Smoke: throw a synthetic error → appears in Sentry dashboard.
+- [x] **Mobile:** `@sentry/react-native` + Expo config plugin + Metro `withSentryConfig`; init from `app/_layout.tsx` via `src/observability/sentry.ts`. (Replaces legacy `sentry-expo` naming in older plans.)
+- [x] **Web:** `@sentry/nextjs` + `sentry.client.config.ts` / `sentry.server.config.ts` / `sentry.edge.config.ts` + `src/instrumentation.ts` + `global-error.tsx`; **`tunnelRoute: /monitoring`**.
+- [x] Env: `EXPO_PUBLIC_SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN` (documented in `.env.example`).
+- [ ] **Smoke:** throw a synthetic error → appears in Sentry dashboard (operator run after DSN pasted).
+- [ ] **Source maps:** optional `SENTRY_AUTH_TOKEN` + org/project on Vercel / EAS for readable stacks.
 
 ---
 
@@ -107,8 +110,12 @@ test('61 reports in one minute: 61st rejected', async () => {
 
 ## Task 11.6 — Deployment Pipelines
 
-- [ ] **Web:** Vercel project linked; `main` auto-deploys to production; PRs deploy preview.
-- [ ] **Mobile:** EAS Build profiles — `development`, `preview`, `production`. `eas.json`:
+- [ ] **Web:** Vercel project linked; `main` auto-deploys to production; PRs deploy preview (operator-owned; `apps/web/vercel.json` sets monorepo install/build).
+- [x] **Mobile:** EAS Build profiles — `development`, `preview`, `production` in `apps/mobile/eas.json` (CLI ≥ 16; `appVersionSource: remote`). Profiles differ slightly from the sketch below — keep `eas.json` as source of truth.
+- [ ] **Submit:** `eas submit --platform ios` (TestFlight), `--platform android` (Play Internal Testing).
+
+<details>
+<summary>Reference `eas.json` sketch (older plan — compare to repo)</summary>
 
 ```json
 {
@@ -122,7 +129,7 @@ test('61 reports in one minute: 61st rejected', async () => {
 }
 ```
 
-- [ ] **Submit:** `eas submit --platform ios` (TestFlight), `--platform android` (Play Internal Testing).
+</details>
 
 ---
 
@@ -270,15 +277,3 @@ Release:
 - [ ] `v0.15.5-hardening` tag pushed
 - [ ] Phase 12 (data audit) plan opened
 
----
-
-## Phase 11 Acceptance
-
-- [ ] All 7 spec-verification items pass on TestFlight + Play Internal builds
-- [ ] Sentry reports zero unhandled errors on 30-min smoke
-- [ ] Rate-limit test passes
-- [ ] Playwright axe: zero violations
-- [ ] Legal pages live + linked from Settings
-- [ ] Vercel production deploy green
-- [ ] TestFlight build installable + catch flow succeeds end-to-end
-- [ ] `v1.0.0` tag pushed

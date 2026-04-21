@@ -1,9 +1,9 @@
 # BiteMap — Status & Roadmap
 
-**Current Date:** Apr 20, 2026
-**Current Phase:** Phases 1-7.5 COMPLETE; Phase 8 (profiles) IN PROGRESS
-**Primary Blocker:** Mapbox tokens needed to live-test map (EXPO_PUBLIC_MAPBOX_TOKEN, NEXT_PUBLIC_MAPBOX_TOKEN)
-**Launch Target:** v1.0.0 — TBD
+**Current Date:** Apr 21, 2026
+**Current Phase:** **Phase 11 — Hardening & UX polish** (IN PROGRESS; was deferred until Vercel / Sentry / EAS existed — infra is now landing)
+**Primary Blocker:** Finish remaining Phase 11 scope (PostHog, legal pages, a11y automation, Edge rate-limit polish, gap injects 11.11–11.15) + device smoke on TestFlight / internal Android
+**Launch Target:** v1.0.0 — blocked on **Phase 11 completion** + external pen-test
 
 ---
 
@@ -26,11 +26,11 @@
 | 9 | Social core (likes, comments, follows, feed) | v0.14.0-social | DONE |
 | 10 | Leaderboard core | v0.15.0-leaderboard | DONE |
 | 10.5 | Citizen Science (optional — criteria-gated) | v0.15.25-citizen-science | OPTIONAL |
-| 11 | Hardening & UX polish + onboarding videos + shark alerts + offline tiles | v0.15.5-hardening | DEFERRED (external infra) |
+| 11 | Hardening & UX polish + onboarding videos + shark alerts + offline tiles | v0.15.5-hardening | **IN PROGRESS** — 11.1 Sentry + 11.6 EAS config shipped; Vercel is user-linked; PostHog / legal / a11y / gap injects open |
 | **12** | **Production data integrity audit (no mocks, real data everywhere)** | **v0.16.0-data-audit** | **DONE (core sweep) — device walkthrough still pending** |
 | **13** | **Security hardening (cybersecurity audit + pen-test)** | **v0.17.0-security** | **DONE (technical core); external pen-test pending** |
 | 14 | v1.0.0-rc1 launch candidate | v1.0.0-rc1 | DONE |
-| 15 | v1.0.0 launch | v1.0.0 | **BLOCKED on external pen-test + Sentry + Vercel + EAS provisioning** |
+| 15 | v1.0.0 launch | v1.0.0 | **BLOCKED on Phase 11 finish + external pen-test** (Sentry/EAS wired in repo; Vercel deploy is operator-owned) |
 
 ---
 
@@ -40,9 +40,9 @@ None yet — no device testing done.
 
 ## Known Risks
 
-- Mapbox tokens not yet configured (need account + token)
-- Supabase is local Docker only — hosted migration happens in Phase 11 hardening
-- E2E tests (Detox/Playwright) deferred to Phase 11
+- Mapbox: keep **URL restrictions** aligned with every deployed web origin (Vercel + localhost); separate token for native if Referer-less requests break maps
+- Hosted Supabase in use for dogfooding — rotate anon key if leaked; RLS remains authoritative
+- E2E tests (Detox/Playwright) still **Phase 11** deliverables
 - Storybook install deferred to Phase 11
 - **Phase 5 deferred to v0.10.1-catch-extras:** offline queue (AsyncStorage + NetInfo), photo upload (expo-image-picker + Storage).
   Server-side privacy snap is now formally scheduled as Task 13.2 in Phase 13 Security.

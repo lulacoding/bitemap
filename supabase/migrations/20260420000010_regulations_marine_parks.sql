@@ -78,7 +78,7 @@ on conflict (species_id, state) do nothing;
 -- geometry + SpatiaLite-style point-in-polygon lands in v0.12.1-marine-parks-pg.
 -- ============================================================================
 create table if not exists public.marine_parks (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   name text not null,
   category text not null check (category in ('MNP','MS','MP','AZ')),
   state text not null default 'VIC',

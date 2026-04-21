@@ -1,5 +1,5 @@
 create table public.saved_spots (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   user_id uuid not null references public.profiles(id) on delete cascade,
   name text not null,
   lat double precision not null,

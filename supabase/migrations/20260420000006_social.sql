@@ -8,7 +8,7 @@ create table public.catch_likes (
 create index catch_likes_user_idx on public.catch_likes(user_id);
 
 create table public.catch_comments (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   catch_id uuid not null references public.catches(id) on delete cascade,
   user_id uuid not null references public.profiles(id) on delete cascade,
   body text not null check (char_length(body) between 1 and 500),

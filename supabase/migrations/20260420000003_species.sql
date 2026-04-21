@@ -1,5 +1,5 @@
 create table public.species (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   common_name text not null,
   scientific_name text,
   category text not null check (category in ('saltwater','freshwater','estuarine','pelagic','other')),

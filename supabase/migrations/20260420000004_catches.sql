@@ -1,5 +1,5 @@
 create table public.catches (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   user_id uuid not null references public.profiles(id) on delete cascade,
   species_id uuid not null references public.species(id),
   quantity int not null default 1 check (quantity > 0),

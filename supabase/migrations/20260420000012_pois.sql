@@ -7,7 +7,7 @@
 -- pois: canonical point-of-interest registry (seeded + community-submitted)
 -- ============================================================================
 create table public.pois (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   name text not null check (char_length(name) between 1 and 120),
   category text not null check (category in (
     'boat_ramp','bait_shop','fuel','jetty','boat_hire','charter'
@@ -40,7 +40,7 @@ create index pois_state_idx on public.pois(state);
 -- poi_reviews: 1-5 star + optional comment, one per user per POI
 -- ============================================================================
 create table public.poi_reviews (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   poi_id uuid not null references public.pois(id) on delete cascade,
   user_id uuid not null references public.profiles(id) on delete cascade,
   rating int not null check (rating between 1 and 5),
@@ -55,7 +55,7 @@ create index poi_reviews_poi_idx on public.poi_reviews(poi_id);
 -- poi_status_reports: community "ramp condition" pulses, auto-expire in 6h
 -- ============================================================================
 create table public.poi_status_reports (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   poi_id uuid not null references public.pois(id) on delete cascade,
   user_id uuid not null references public.profiles(id) on delete cascade,
   status text not null check (status in ('open','crowded','debris','closed')),

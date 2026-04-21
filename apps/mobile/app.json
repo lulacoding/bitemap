@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "BiteMap",
+    "slug": "bitemap",
+    "scheme": "bitemap",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,9 +14,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bitemap.app"
     },
     "android": {
+      "package": "com.bitemap.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -38,7 +41,8 @@
         {
           "locationWhenInUsePermission": "BiteMap uses your location to show nearby catches and help you log spots."
         }
-      ]
+      ],
+      "@sentry/react-native"
     ]
   }
 }

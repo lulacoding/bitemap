@@ -10,13 +10,14 @@
     "typecheck": "tsc --noEmit",
     "lint": "echo \"(mobile lint deferred to Phase 0.5)\" && exit 0",
     "test": "echo \"(no mobile tests yet)\" && exit 0",
-    "build": "echo \"(mobile build via EAS in Phase 11)\" && exit 0"
+    "build": "echo \"Use EAS: cd apps/mobile && eas build --platform ios --profile preview\" && exit 0"
   },
   "dependencies": {
     "@bitemap/shared": "workspace:*",
     "@bitemap/ui": "workspace:*",
     "@gorhom/bottom-sheet": "^5.2.9",
     "@rnmapbox/maps": "^10.3.0",
+    "@sentry/react-native": "^8.8.0",
     "@supabase/supabase-js": "^2.104.0",
     "@tanstack/react-query": "^5.99.2",
     "expo": "~54.0.33",

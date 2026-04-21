@@ -1,13 +1,7 @@
 /**
- * BiteMap web — Next.js config with Phase 13 security headers.
- *
- * CSP allowlist reflects the APIs the app actually hits:
- * - Supabase (auth, DB, storage, realtime)
- * - Mapbox (map tiles + telemetry)
- * - Open-Meteo (marine + forecast)
- *
- * Tighten if any new origin is added; reject otherwise.
+ * BiteMap web — Next.js config with Phase 13 security headers + Sentry.
  */
+import { withSentryConfig } from '@sentry/nextjs';
 
 const CSP_DIRECTIVES = [
   "default-src 'self'",
@@ -15,7 +9,17 @@ const CSP_DIRECTIVES = [
   "style-src 'self' 'unsafe-inline'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
   "font-src 'self' data:",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mapbox.com https://events.mapbox.com https://marine-api.open-meteo.com https://api.open-meteo.com",
+  [
+    'connect-src',
+    "'self'",
+    'https://*.supabase.co',
+    'wss://*.supabase.co',
+    'https://api.mapbox.com',
+    'https://events.mapbox.com',
+    'https://marine-api.open-meteo.com',
+    'https://api.open-meteo.com',
+    'https://*.sentry.io',
+  ].join(' '),
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -49,4 +53,8 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  silent: true,
+  hideSourceMaps: true,
+  tunnelRoute: '/monitoring',
+});

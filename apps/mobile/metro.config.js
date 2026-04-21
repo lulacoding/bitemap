@@ -1,5 +1,7 @@
 const { getDefaultConfig } = require('expo/metro-config');
+const { withSentryConfig } = require('@sentry/react-native/metro');
 const path = require('path');
+
 const config = getDefaultConfig(__dirname);
 config.watchFolders = [path.resolve(__dirname, '../..')];
 config.resolver.nodeModulesPaths = [
@@ -7,4 +9,5 @@ config.resolver.nodeModulesPaths = [
   path.resolve(__dirname, '../../node_modules'),
 ];
 config.resolver.disableHierarchicalLookup = true;
-module.exports = config;
+
+module.exports = withSentryConfig(config);

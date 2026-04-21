@@ -46,6 +46,23 @@ Use the same `NEXT_PUBLIC_*` env vars in the Vercel project as in `apps/web/.env
 
 ## Run the mobile app (iOS simulator)
 
+**Important:** Expo’s native project must live under `apps/mobile/`, not the monorepo root. If you ever ran `expo prebuild` or `expo run:ios` from the repo root, delete stray folders first:
+
+```bash
+# from the monorepo root (same folder as this repo's package.json)
+rm -rf ios android
+```
+
+**First native build (Mapbox + custom dev client):** from the repo root:
+
+```bash
+pnpm ios
+```
+
+That runs `expo run:ios` with `PROJECT_ROOT` = `apps/mobile` (fixes `EXConstants` “Generate app.config” failures caused by a root-level `app.json` stub).
+
+**Metro only (after a dev build is installed):**
+
 ```bash
 pnpm --filter mobile start
 ```

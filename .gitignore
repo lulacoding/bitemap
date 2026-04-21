@@ -1,3 +1,7 @@
+# Never prebuild Expo at monorepo root — native projects live under apps/mobile/
+/ios
+/android
+
 node_modules
 .turbo
 dist

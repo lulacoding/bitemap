@@ -9,6 +9,7 @@ import {
   AU_STATES,
   type AuState,
 } from '@bitemap/shared';
+import { webPosthogSetOptOut } from '@/telemetry/posthogWeb';
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function EditProfilePage() {
   const [location, setLocation] = useState('');
   const [homeState, setHomeState] = useState<AuState>('VIC');
   const [photoBackup, setPhotoBackup] = useState(false);
+  const [analyticsOptOut, setAnalyticsOptOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -33,11 +35,13 @@ export default function EditProfilePage() {
     setLocation(profile.location ?? '');
     setHomeState((profile.home_state as AuState) ?? 'VIC');
     setPhotoBackup(profile.photo_backup_enabled);
+    setAnalyticsOptOut(profile.analytics_opt_out);
   }, [profile]);
 
   const mutation = useMutation({
     mutationFn: updateMyProfile,
-    onSuccess: () => {
+    onSuccess: (_, vars) => {
+      webPosthogSetOptOut(vars.analytics_opt_out ?? false);
       qc.invalidateQueries({ queryKey: ['my-profile'] });
       router.push('/profile');
     },
@@ -61,6 +65,7 @@ export default function EditProfilePage() {
       location: location.trim(),
       home_state: homeState,
       photo_backup_enabled: photoBackup,
+      analytics_opt_out: analyticsOptOut,
     });
   };
 
@@ -145,6 +150,21 @@ export default function EditProfilePage() {
             <p className="text-xs text-gray-500">
               Opt-in. When off, photos are local-only and deleted with the 48h
               catch decay.
+            </p>
+          </div>
+        </label>
+
+        <label className="flex items-start gap-3 rounded-lg bg-gray-50 p-4">
+          <input
+            type="checkbox"
+            checked={analyticsOptOut}
+            onChange={(e) => setAnalyticsOptOut(e.target.checked)}
+            className="mt-1 h-5 w-5"
+          />
+          <div>
+            <p className="font-semibold text-gray-900">Opt out of product analytics</p>
+            <p className="text-xs text-gray-500">
+              When checked, PostHog (if configured) will not record usage events for your account.
             </p>
           </div>
         </label>

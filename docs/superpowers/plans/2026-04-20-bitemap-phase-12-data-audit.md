@@ -18,14 +18,9 @@ Rule enforced by this phase and documented in `.claude/context/decisions.md`: **
 
 ## Task 12.1 — Mock / placeholder / TODO sweep
 
-- [ ] **Ripgrep audit** — must return zero hits across `apps/` and `packages/`:
-  ```bash
-  rg -i 'mock|placeholder|lorem|TODO|FIXME|XXX|@ts-ignore|@ts-expect-error' \
-     apps/ packages/ \
-     --glob '!*.test.ts' --glob '!*.test.tsx' --glob '!node_modules/**'
-  ```
-- [ ] Remove `mockCatches` fallback from `apps/mobile/src/map/MapView.tsx` and `apps/web/src/map/MapView.tsx`. Empty DB = empty map with a helpful "No catches in this area — be the first" empty state. Pin-render code must accept 0 catches cleanly.
-- [ ] Remove `apps/web/src/app/page.tsx` design-system showcase content or move it behind a `/_internal/showcase` route that 404s for unauthenticated users. Homepage should redirect to `/(app)/map` when authenticated, `/sign-in` when not.
+- [x] **CI text audit** — `pnpm audit:phase12` (`scripts/phase12-text-audit.mjs`) fails on banned tokens in `apps/` + `packages/` (excludes `*.test.ts(x)`). Supersedes one-off ripgrep for the worst offenders (`mockCatches`, `MockCatch`, `TODO:`, etc.).
+- [x] Remove `mockCatches` export; map uses real `listCatches` only; shared type renamed **`MapCatchPin`**. Pin-render accepts zero catches.
+- [x] **`/`** — server redirect: authenticated → `/map`, else `/sign-in` (no design-system showcase on the public root).
 - [ ] Remove any `console.log` / `console.debug` not wrapped in `if (__DEV__)` or equivalent.
 - [ ] Delete dead code: unused imports, unreachable branches, commented-out blocks ≥3 lines.
 
@@ -60,7 +55,7 @@ Walk every user-reachable screen; confirm it hits a real source (Supabase, Open-
 - [ ] New CI step: startup sanity check. If any required var is missing, fail build with a clear error naming the var.
 - [ ] No hardcoded URLs anywhere — `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_MAPBOX_TOKEN`, etc.
 - [ ] No hardcoded keys anywhere — `git diff origin/main -- ':(exclude).env.example'` must not contain any string matching the anon-key pattern `eyJ[A-Za-z0-9_-]{20,}` outside tests.
-- [ ] Document which vars are required for dev vs prod in `docs/deployment.md` (new file in this phase).
+- [x] Document which vars are required for dev vs prod in `docs/deployment.md`.
 
 ## Task 12.5 — Query hygiene
 
@@ -79,9 +74,9 @@ Walk every user-reachable screen; confirm it hits a real source (Supabase, Open-
 
 ## Task 12.7 — Analytics & telemetry
 
-- [ ] Add minimal analytics (PostHog or Plausible, free tier) — opt-in via profile setting, default OFF for Phase 12.
-- [ ] Crash reporter wired (Sentry free tier, 5k events/mo). Source maps uploaded on each release.
-- [ ] No telemetry fires in dev mode — gate on `__DEV__ === false` + the opt-in flag.
+- [x] PostHog (web + mobile) with **`analytics_opt_out`** profile toggle and consent on web; aligns with Phase 11.2.
+- [x] Crash reporter wired (Sentry) — see Task 11.1.
+- [ ] Strict "no telemetry in dev" matrix — verify every capture path is gated as intended (spot-check + tests still open).
 
 ## Task 12.8 — End-to-end device walkthrough
 

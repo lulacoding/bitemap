@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { webCapture } from '@/telemetry/posthogWeb';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useQuery } from '@tanstack/react-query';
@@ -47,6 +48,41 @@ export default function WebMapView() {
   const [error, setError] = useState<string | null>(null);
 
   const filters = useFiltersStore();
+  const mapOpened = useRef(false);
+  const filterDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (mapOpened.current) return;
+    mapOpened.current = true;
+    webCapture('map_opened', { platform: 'web' });
+  }, []);
+
+  useEffect(() => {
+    const unsub = useFiltersStore.subscribe((s, p) => {
+      if (
+        s.species === p.species &&
+        s.bait === p.bait &&
+        s.technique === p.technique &&
+        s.freshnessHours === p.freshnessHours &&
+        s.viewMode === p.viewMode &&
+        s.layers.pois === p.layers.pois &&
+        s.layers.marineParks === p.layers.marineParks
+      ) {
+        return;
+      }
+      if (filterDebounce.current) clearTimeout(filterDebounce.current);
+      filterDebounce.current = setTimeout(() => {
+        webCapture('filter_applied', {
+          species_count: s.species.length,
+          view_mode: s.viewMode,
+        });
+      }, 800);
+    });
+    return () => {
+      unsub();
+      if (filterDebounce.current) clearTimeout(filterDebounce.current);
+    };
+  }, []);
 
   const catchesQuery = useQuery({
     queryKey: [
@@ -65,6 +101,7 @@ export default function WebMapView() {
         freshnessHours: filters.freshnessHours,
       }),
     refetchInterval: 30_000,
+    staleTime: 10_000,
   });
 
   const parksQuery = useQuery({

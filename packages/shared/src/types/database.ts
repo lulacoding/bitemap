@@ -406,6 +406,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          analytics_opt_out: boolean
           avatar_url: string | null
           bio: string | null
           created_at: string
@@ -422,6 +423,7 @@ export type Database = {
           xp: number
         }
         Insert: {
+          analytics_opt_out?: boolean
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
@@ -438,6 +440,7 @@ export type Database = {
           xp?: number
         }
         Update: {
+          analytics_opt_out?: boolean
           avatar_url?: string | null
           bio?: string | null
           created_at?: string

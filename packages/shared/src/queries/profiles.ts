@@ -12,6 +12,7 @@ export const profileSchema = z.object({
   is_guide: z.boolean(),
   is_verified: z.boolean(),
   photo_backup_enabled: z.boolean(),
+  analytics_opt_out: z.boolean(),
   created_at: z.string(),
 });
 
@@ -24,6 +25,7 @@ export const profileUpdateSchema = z.object({
   home_state: auStateSchema.optional(),
   avatar_url: z.string().url().optional(),
   photo_backup_enabled: z.boolean().optional(),
+  analytics_opt_out: z.boolean().optional(),
 });
 
 export type ProfileUpdate = z.infer<typeof profileUpdateSchema>;
@@ -33,7 +35,7 @@ export async function getProfileById(id: string): Promise<Profile | null> {
   const { data, error } = await supabase()
     .from('profiles')
     .select(
-      'id, username, avatar_url, bio, location, home_state, is_guide, is_verified, photo_backup_enabled, created_at',
+      'id, username, avatar_url, bio, location, home_state, is_guide, is_verified, photo_backup_enabled, analytics_opt_out, created_at',
     )
     .eq('id', id)
     .maybeSingle();
@@ -48,7 +50,7 @@ export async function getProfileByUsername(
   const { data, error } = await supabase()
     .from('profiles')
     .select(
-      'id, username, avatar_url, bio, location, home_state, is_guide, is_verified, photo_backup_enabled, created_at',
+      'id, username, avatar_url, bio, location, home_state, is_guide, is_verified, photo_backup_enabled, analytics_opt_out, created_at',
     )
     .eq('username', username)
     .maybeSingle();
@@ -81,7 +83,7 @@ export async function updateMyProfile(patch: ProfileUpdate): Promise<Profile> {
     .update(row as any)
     .eq('id', auth.user.id)
     .select(
-      'id, username, avatar_url, bio, location, home_state, is_guide, is_verified, photo_backup_enabled, created_at',
+      'id, username, avatar_url, bio, location, home_state, is_guide, is_verified, photo_backup_enabled, analytics_opt_out, created_at',
     )
     .single();
 

@@ -3,10 +3,10 @@ import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useCallback, useMemo, useRef, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { colors } from '@bitemap/ui';
-import type { MockCatch } from '@bitemap/shared';
+import type { MapCatchPin } from '@bitemap/shared';
 
 interface Props {
-  catch_: MockCatch | null;
+  catch_: MapCatchPin | null;
   onClose: () => void;
 }
 

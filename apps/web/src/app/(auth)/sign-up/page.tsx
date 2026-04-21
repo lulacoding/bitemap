@@ -1,7 +1,9 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '@bitemap/shared';
+import { initWebPosthog, webCapture } from '@/telemetry/posthogWeb';
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -18,6 +20,8 @@ export default function SignUpPage() {
       options: { emailRedirectTo: `${location.origin}/auth/callback` },
     });
     if (err) { setError(err.message); return; }
+    initWebPosthog();
+    webCapture('sign_up', { email_domain: email.split('@')[1] ?? 'unknown' });
     setMessage('Check your email to confirm your account.');
     setTimeout(() => router.replace('/sign-in'), 3000);
   };
@@ -38,6 +42,11 @@ export default function SignUpPage() {
         />
         <button type="submit" className="rounded bg-[#0E5C8A] py-2 text-white">Create account</button>
         <a href="/sign-in" className="text-center text-sm text-[#0E5C8A]">Already have an account? Sign in</a>
+        <p className="text-center text-xs text-gray-500">
+          <Link className="text-[#0E5C8A]" href="/legal/privacy">Privacy</Link>
+          {' · '}
+          <Link className="text-[#0E5C8A]" href="/legal/terms">Terms</Link>
+        </p>
       </form>
     </main>
   );

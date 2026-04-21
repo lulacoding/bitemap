@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { View, Pressable, Text, StyleSheet, useColorScheme } from 'react-native';
 import Mapbox, {
   MapView as RNMapView,
@@ -15,7 +15,7 @@ import {
   PORT_PHILLIP_BAY_CENTER,
   useFiltersStore,
   type Catch,
-  type MockCatch,
+  type MapCatchPin,
 } from '@bitemap/shared';
 import { colors } from '@bitemap/ui';
 import { CatchPin } from './CatchPin';
@@ -28,6 +28,7 @@ import { HeatmapLayer } from './HeatmapLayer';
 import { MarineParksLayer } from './MarineParksLayer';
 import { POILayer } from './POILayer';
 import { POIDetailSheet } from './POIDetailSheet';
+import { mobileCapture } from '../telemetry/mobileProductEvents';
 
 const MAPBOX_TOKEN = process.env.EXPO_PUBLIC_MAPBOX_TOKEN;
 if (MAPBOX_TOKEN) {
@@ -41,7 +42,7 @@ function hoursAgo(iso: string): number {
 export default function MapView() {
   const scheme = useColorScheme();
   const router = useRouter();
-  const [selected, setSelected] = useState<MockCatch | null>(null);
+  const [selected, setSelected] = useState<MapCatchPin | null>(null);
   const [selectedPoiId, setSelectedPoiId] = useState<string | null>(null);
   const { location, requestPermission } = useUserLocation();
   const [cameraCenter, setCameraCenter] =
@@ -50,6 +51,41 @@ export default function MapView() {
   useCatchSubscription();
 
   const filters = useFiltersStore();
+  const mapOpened = useRef(false);
+  const filterDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (mapOpened.current) return;
+    mapOpened.current = true;
+    mobileCapture('map_opened', { platform: 'mobile' });
+  }, []);
+
+  useEffect(() => {
+    const unsub = useFiltersStore.subscribe((s, p) => {
+      if (
+        s.species === p.species &&
+        s.bait === p.bait &&
+        s.technique === p.technique &&
+        s.freshnessHours === p.freshnessHours &&
+        s.viewMode === p.viewMode &&
+        s.layers.pois === p.layers.pois &&
+        s.layers.marineParks === p.layers.marineParks
+      ) {
+        return;
+      }
+      if (filterDebounce.current) clearTimeout(filterDebounce.current);
+      filterDebounce.current = setTimeout(() => {
+        mobileCapture('filter_applied', {
+          species_count: s.species.length,
+          view_mode: s.viewMode,
+        });
+      }, 800);
+    });
+    return () => {
+      unsub();
+      if (filterDebounce.current) clearTimeout(filterDebounce.current);
+    };
+  }, []);
 
   const catchesQuery = useQuery({
     queryKey: [
@@ -68,6 +104,7 @@ export default function MapView() {
         freshnessHours: filters.freshnessHours,
       }),
     refetchInterval: 30_000,
+    staleTime: 10_000,
   });
 
   const parksQuery = useQuery({
@@ -86,7 +123,7 @@ export default function MapView() {
   const realCatches = catchesQuery.data ?? [];
   const hasRealCatches = realCatches.length > 0;
 
-  const pins: MockCatch[] = useMemo(
+  const pins: MapCatchPin[] = useMemo(
     () =>
       realCatches.map((c: Catch) => ({
         id: c.id,

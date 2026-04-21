@@ -3,7 +3,7 @@ import {
   alphaForAgeHours,
   pinColorForCategory,
   mapboxStyleForTheme,
-  mockCatches,
+  type MapCatchPin,
 } from './helpers';
 
 describe('alphaForAgeHours', () => {
@@ -60,10 +60,15 @@ describe('mapboxStyleForTheme', () => {
   });
 });
 
-describe('mockCatches', () => {
-  it('has 5 entries all inside Port Phillip Bay bounds', () => {
-    expect(mockCatches).toHaveLength(5);
-    mockCatches.forEach((c) => {
+/** Test-only fixture — never shipped as user-facing data. */
+const SAMPLE_PINS: MapCatchPin[] = [
+  { id: 't1', lat: -38.083, lng: 144.875, species: 'Snapper', category: 'saltwater', ageHours: 2 },
+  { id: 't2', lat: -38.132, lng: 144.655, species: 'KG Whiting', category: 'saltwater', ageHours: 12 },
+];
+
+describe('MapCatchPin sample bounds', () => {
+  it('fixture pins sit inside Port Phillip Bay bounds', () => {
+    SAMPLE_PINS.forEach((c) => {
       expect(c.lat).toBeGreaterThan(-38.5);
       expect(c.lat).toBeLessThan(-37.7);
       expect(c.lng).toBeGreaterThan(144.4);

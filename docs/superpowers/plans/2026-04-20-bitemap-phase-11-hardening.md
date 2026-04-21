@@ -50,23 +50,23 @@ eas.json
 
 ## Task 11.2 — Product Analytics
 
-- [ ] PostHog project init; install `posthog-react-native`, `posthog-js`.
-- [ ] **Events** (minimum):
-  - `sign_up`
-  - `sign_in`
-  - `catch_posted` (with species_category, privacy_level, online/offline)
-  - `map_opened`
-  - `filter_applied`
-  - `follow_added`
-  - `comment_posted`
-  - `like_added`
-- [ ] Respect user opt-out (setting toggle in profile edit).
+- [x] PostHog project init; install `posthog-react-native`, `posthog-js` (web + mobile wired; CSP `connect-src` for PostHog hosts).
+- [x] **Events** (minimum) — **partial**:
+  - [x] `sign_up`
+  - [x] `sign_in`
+  - [x] `catch_posted` (with species_category, privacy_level, online/offline)
+  - [x] `map_opened`
+  - [x] `filter_applied`
+  - [ ] `follow_added` (wire from social actions — still open)
+  - [ ] `comment_posted` (wire from social actions — still open)
+  - [ ] `like_added` (wire from social actions — still open)
+- [x] Respect user opt-out (`profiles.analytics_opt_out` + profile edit toggle; PostHog `optOut` / web consent banner).
 
 ---
 
 ## Task 11.3 — Rate Limiting on `post-catch`
 
-- [ ] **Unit test**
+- [x] **DB test:** `supabase/tests/rate_limit_create_catch.test.sql` (61st insert in window fails).
 
 ```ts
 test('61 reports in one minute: 61st rejected', async () => {
@@ -75,9 +75,9 @@ test('61 reports in one minute: 61st rejected', async () => {
 });
 ```
 
-- [ ] **Implementation:** Supabase Edge Function middleware storing rolling-window counts per user in a `rate_limits` table OR using Supabase KV. Window: 60 requests / 60 seconds.
+- [x] **Implementation:** Postgres `BEFORE INSERT` trigger on `public.catches` (`enforce_create_catch_rate_limit`) — 60 inserts / 60s per user via existing `rate_limit_hit` helper; surfaces as `CatchRateLimitError` / user-facing copy on web + mobile report flows.
 
-- [ ] On 429: return JSON `{ error: 'rate_limit', retry_after_seconds: N }`. Client shows "Whoa, slow down" toast.
+- [x] Client UX: friendly "slow down" messaging on rate-limit (`CatchRateLimitError`), not raw `P0001`.
 
 ---
 
@@ -98,13 +98,9 @@ test('61 reports in one minute: 61st rejected', async () => {
 
 ## Task 11.5 — Legal Pages
 
-- [ ] `/legal/privacy` — drafted in MDX. Must state:
-  - What data is collected (email, GPS, photos, usage)
-  - Retention of catches (48h visible, indefinite in own logbook)
-  - Third parties: Supabase, Mapbox, BOM, WorldTides, Sentry, PostHog
-  - User rights: delete account, export data (Supabase auth admin API)
-- [ ] `/legal/terms` — drafted in MDX. Community code of conduct, flagging, admin moderation rights.
-- [ ] Mobile app: link to web-hosted legal from Settings.
+- [x] `/legal/privacy` — implemented as Next.js pages (`apps/web/src/app/legal/privacy/page.tsx`); covers collection, retention, third parties (incl. PostHog), rights.
+- [x] `/legal/terms` — `apps/web/src/app/legal/terms/page.tsx`.
+- [x] Mobile app: Privacy / Terms open web-hosted legal URLs via `getWebAppBaseUrl()` from profile.
 
 ---
 

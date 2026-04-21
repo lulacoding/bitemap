@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { AuthProvider } from '../src/auth/AuthProvider';
 import { initMobileSentry } from '../src/observability/sentry';
+import { MaybePostHog } from '../src/telemetry/MaybePostHog';
 
 initMobileSentry();
 
@@ -13,9 +14,11 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <Slot />
-        </AuthProvider>
+        <MaybePostHog>
+          <AuthProvider>
+            <Slot />
+          </AuthProvider>
+        </MaybePostHog>
       </QueryClientProvider>
     </GestureHandlerRootView>
   );

@@ -12,6 +12,7 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import {
+  CatchRateLimitError,
   createCatch,
   getSpeciesById,
   getSpeciesRarity,
@@ -23,6 +24,7 @@ import {
   type PrivacyLevel,
 } from '@bitemap/shared';
 import { colors } from '@bitemap/ui';
+import { mobileCapture } from '../../../src/telemetry/mobileProductEvents';
 import { useUserLocation } from '../../../src/map/useUserLocation';
 import { BagLimitCounter } from '../../../src/profile/BagLimitCounter';
 
@@ -70,6 +72,10 @@ export default function ReportCatchScreen() {
     onSuccess: async (created) => {
       qc.invalidateQueries({ queryKey: ['catches'] });
       qc.invalidateQueries({ queryKey: ['my-xp'] });
+      mobileCapture('catch_posted', {
+        species_id: created.species_id,
+        privacy_level: created.privacy_level,
+      });
 
       // Rare-catch notification
       try {
@@ -94,6 +100,10 @@ export default function ReportCatchScreen() {
       ]);
     },
     onError: (err: unknown) => {
+      if (err instanceof CatchRateLimitError) {
+        Alert.alert('Slow down', err.message);
+        return;
+      }
       Alert.alert(
         'Failed to log catch',
         err instanceof Error ? err.message : 'Unknown error',

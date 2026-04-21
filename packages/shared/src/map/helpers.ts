@@ -1,6 +1,7 @@
 export type CatchCategory = 'saltwater' | 'freshwater' | 'estuarine' | 'pelagic' | 'other';
 
-export interface MockCatch {
+/** Minimal pin shape for map rendering (derived from real `Catch` rows in UI). */
+export interface MapCatchPin {
   id: string;
   lat: number;
   lng: number;
@@ -8,14 +9,6 @@ export interface MockCatch {
   category: CatchCategory;
   ageHours: number;
 }
-
-export const mockCatches: MockCatch[] = [
-  { id: 'm1', lat: -38.083, lng: 144.875, species: 'Snapper', category: 'saltwater', ageHours: 2 },
-  { id: 'm2', lat: -38.132, lng: 144.655, species: 'King George Whiting', category: 'saltwater', ageHours: 12 },
-  { id: 'm3', lat: -38.21, lng: 144.71, species: 'Flathead', category: 'estuarine', ageHours: 28 },
-  { id: 'm4', lat: -37.895, lng: 144.79, species: 'Australian Salmon', category: 'pelagic', ageHours: 6 },
-  { id: 'm5', lat: -38.045, lng: 144.82, species: 'Bream', category: 'estuarine', ageHours: 44 },
-];
 
 /**
  * Linearly fade pin opacity from 1.0 (fresh) to 0.3 (48h+ old).

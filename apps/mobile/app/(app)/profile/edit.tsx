@@ -34,6 +34,7 @@ export default function EditProfileScreen() {
   const [location, setLocation] = useState('');
   const [homeState, setHomeState] = useState<AuState>('VIC');
   const [photoBackup, setPhotoBackup] = useState(false);
+  const [analyticsOptOut, setAnalyticsOptOut] = useState(false);
 
   useEffect(() => {
     if (!profile) return;
@@ -42,6 +43,7 @@ export default function EditProfileScreen() {
     setLocation(profile.location ?? '');
     setHomeState((profile.home_state as AuState) ?? 'VIC');
     setPhotoBackup(profile.photo_backup_enabled);
+    setAnalyticsOptOut(profile.analytics_opt_out);
   }, [profile]);
 
   const mutation = useMutation({
@@ -70,6 +72,7 @@ export default function EditProfileScreen() {
       location: location.trim(),
       home_state: homeState,
       photo_backup_enabled: photoBackup,
+      analytics_opt_out: analyticsOptOut,
     });
   };
 
@@ -135,6 +138,16 @@ export default function EditProfileScreen() {
           </Text>
         </View>
         <Switch value={photoBackup} onValueChange={setPhotoBackup} />
+      </View>
+
+      <View style={s.toggleRow}>
+        <View style={{ flex: 1 }}>
+          <Text style={s.toggleLabel}>Opt out of product analytics</Text>
+          <Text style={s.toggleHint}>
+            When on, PostHog (if configured) will not record usage events.
+          </Text>
+        </View>
+        <Switch value={analyticsOptOut} onValueChange={setAnalyticsOptOut} />
       </View>
 
       <Pressable

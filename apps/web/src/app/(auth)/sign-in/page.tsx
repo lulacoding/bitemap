@@ -1,7 +1,9 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '@bitemap/shared';
+import { initWebPosthog, webCapture } from '@/telemetry/posthogWeb';
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');
@@ -14,6 +16,8 @@ export default function SignInPage() {
     setError('');
     const { error: err } = await supabase().auth.signInWithPassword({ email, password });
     if (err) { setError(err.message); return; }
+    initWebPosthog();
+    webCapture('sign_in', { method: 'password' });
     router.replace('/');
   };
 
@@ -40,6 +44,11 @@ export default function SignInPage() {
         <button type="submit" className="rounded bg-[#0E5C8A] py-2 text-white">Sign in</button>
         <button type="button" onClick={handleGoogle} className="rounded border py-2">Continue with Google</button>
         <a href="/sign-up" className="text-center text-sm text-[#0E5C8A]">No account? Sign up →</a>
+        <p className="text-center text-xs text-gray-500">
+          <Link className="text-[#0E5C8A]" href="/legal/privacy">Privacy</Link>
+          {' · '}
+          <Link className="text-[#0E5C8A]" href="/legal/terms">Terms</Link>
+        </p>
       </form>
     </main>
   );

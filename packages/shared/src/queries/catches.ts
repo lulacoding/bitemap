@@ -5,6 +5,14 @@ import {
   type CatchInput,
 } from '../schemas/catch';
 
+/** Thrown when `createCatch` hits DB rate limit (Phase 11). */
+export class CatchRateLimitError extends Error {
+  override readonly name = 'CatchRateLimitError';
+  constructor(message = 'You are posting catches too quickly. Wait a minute and try again.') {
+    super(message);
+  }
+}
+
 export interface CatchFilters {
   species?: string[];
   bait?: string | undefined;
@@ -97,6 +105,12 @@ export async function createCatch(input: CatchInput): Promise<Catch> {
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) {
+    const msg = error.message ?? '';
+    if (msg.includes('rate_limit') || (error as { code?: string }).code === 'P0001') {
+      throw new CatchRateLimitError();
+    }
+    throw error;
+  }
   return catchSchema.parse(data);
 }

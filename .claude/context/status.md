@@ -1,8 +1,8 @@
 # BiteMap — Status & Roadmap
 
 **Current Date:** Apr 21, 2026
-**Current Phase:** **Phase 11 — Hardening & UX polish** (IN PROGRESS; was deferred until Vercel / Sentry / EAS existed — infra is now landing)
-**Primary Blocker:** Finish remaining Phase 11 scope (PostHog, legal pages, a11y automation, Edge rate-limit polish, gap injects 11.11–11.15) + device smoke on TestFlight / internal Android
+**Current Phase:** **Phase 11 — Hardening & UX polish** (core analytics + legal + DB rate limit + map/report events landed; **gap injects 11.4 / 11.11–11.15 + social analytics events** still open)
+**Primary Blocker:** a11y automation + manual device smoke; large gap injects (onboarding video, marine hazard layer, offline tiles, regulatory cron); external pen-test for v1.0.0
 **Launch Target:** v1.0.0 — blocked on **Phase 11 completion** + external pen-test
 
 ---
@@ -26,7 +26,7 @@
 | 9 | Social core (likes, comments, follows, feed) | v0.14.0-social | DONE |
 | 10 | Leaderboard core | v0.15.0-leaderboard | DONE |
 | 10.5 | Citizen Science (optional — criteria-gated) | v0.15.25-citizen-science | OPTIONAL |
-| 11 | Hardening & UX polish + onboarding videos + shark alerts + offline tiles | v0.15.5-hardening | **IN PROGRESS** — 11.1 Sentry + 11.6 EAS in repo; **Vercel production live**; PostHog / legal / a11y / gap injects open |
+| 11 | Hardening & UX polish + onboarding videos + shark alerts + offline tiles | v0.15.5-hardening | **IN PROGRESS** — Sentry + EAS + Vercel live; **PostHog + legal + catch rate limit (DB) + profile analytics toggle** in repo; Playwright a11y / gap injects / social product events still open |
 | **12** | **Production data integrity audit (no mocks, real data everywhere)** | **v0.16.0-data-audit** | **DONE (core sweep) — device walkthrough still pending** |
 | **13** | **Security hardening (cybersecurity audit + pen-test)** | **v0.17.0-security** | **DONE (technical core); external pen-test pending** |
 | 14 | v1.0.0-rc1 launch candidate | v1.0.0-rc1 | DONE |

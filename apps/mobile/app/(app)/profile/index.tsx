@@ -7,6 +7,7 @@ import {
   Pressable,
   ActivityIndicator,
   Alert,
+  Linking,
 } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
@@ -14,6 +15,7 @@ import {
   getMyProfile,
   getLogbook,
   getMyXp,
+  getWebAppBaseUrl,
   xpTier,
   xpToNextTier,
   supabase,
@@ -125,6 +127,22 @@ export default function MyProfileScreen() {
         </Pressable>
         <Pressable style={s.btn} onPress={() => router.push('/(app)/stats')}>
           <Text style={s.btnText}>Analytics</Text>
+        </Pressable>
+        <Pressable
+          style={s.btn}
+          onPress={() =>
+            void Linking.openURL(`${getWebAppBaseUrl()}/legal/privacy`)
+          }
+        >
+          <Text style={s.btnText}>Privacy policy</Text>
+        </Pressable>
+        <Pressable
+          style={s.btn}
+          onPress={() =>
+            void Linking.openURL(`${getWebAppBaseUrl()}/legal/terms`)
+          }
+        >
+          <Text style={s.btnText}>Terms of use</Text>
         </Pressable>
         <Pressable
           style={[s.btn, s.btnDanger]}

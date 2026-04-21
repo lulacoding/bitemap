@@ -3,14 +3,14 @@ import { PointAnnotation } from '@rnmapbox/maps';
 import {
   alphaForAgeHours,
   pinColorForCategory,
-  type MockCatch,
+  type MapCatchPin,
 } from '@bitemap/shared';
 
 export function CatchPin({
   catch: c,
   onPress,
 }: {
-  catch: MockCatch;
+  catch: MapCatchPin;
   onPress?: () => void;
 }) {
   const fill = pinColorForCategory(c.category);
@@ -24,6 +24,8 @@ export function CatchPin({
     >
       <View
         testID={`pin-${c.id}`}
+        accessibilityRole="button"
+        accessibilityLabel={`${c.species} catch, ${Math.max(0, Math.round(c.ageHours))} hours ago`}
         style={[styles.pin, { backgroundColor: fill, opacity }]}
       />
     </PointAnnotation>

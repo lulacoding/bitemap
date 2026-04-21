@@ -4,12 +4,14 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
+  CatchRateLimitError,
   createCatch,
   getSpeciesById,
   listMarineParks,
   parksContainingPoint,
   type PrivacyLevel,
 } from '@bitemap/shared';
+import { webCapture } from '@/telemetry/posthogWeb';
 
 export default function ReportPage() {
   return (
@@ -62,9 +64,20 @@ function ReportPageInner() {
 
   const mutation = useMutation({
     mutationFn: createCatch,
-    onSuccess: () => router.push('/(app)/map'),
-    onError: (e: unknown) =>
-      setError(e instanceof Error ? e.message : 'Failed to save catch'),
+    onSuccess: (_, vars) => {
+      webCapture('catch_posted', {
+        species_id: vars.species_id,
+        privacy_level: vars.privacy_level,
+      });
+      router.push('/map');
+    },
+    onError: (e: unknown) => {
+      if (e instanceof CatchRateLimitError) {
+        setError(e.message);
+        return;
+      }
+      setError(e instanceof Error ? e.message : 'Failed to save catch');
+    },
   });
 
   const handleSubmit = (e: React.FormEvent) => {

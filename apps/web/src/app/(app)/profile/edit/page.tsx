@@ -128,8 +128,8 @@ export default function EditProfilePage() {
             ))}
           </div>
           <p className="text-xs text-gray-500">
-            Sets which state's bag limits + closed seasons show on your catch
-            reports.
+            Sets which state&apos;s bag limits + closed seasons show on your
+            catch reports.
           </p>
         </div>
 

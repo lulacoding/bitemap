@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
@@ -12,6 +12,16 @@ import {
 } from '@bitemap/shared';
 
 export default function ReportPage() {
+  return (
+    <Suspense
+      fallback={<p className="p-8 text-gray-500">Loading…</p>}
+    >
+      <ReportPageInner />
+    </Suspense>
+  );
+}
+
+function ReportPageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const speciesId = searchParams.get('species');

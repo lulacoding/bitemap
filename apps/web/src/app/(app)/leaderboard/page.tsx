@@ -63,8 +63,8 @@ export default function LeaderboardPage() {
         <div className="mt-10 rounded-xl bg-gray-50 p-8 text-center">
           <p className="font-semibold text-gray-900">Be the first</p>
           <p className="mt-2 text-sm text-gray-600">
-            No catches on this board yet this month. Log one and you'll claim
-            the top spot.
+            No catches on this board yet this month. Log one and you&apos;ll
+            claim the top spot.
           </p>
         </div>
       ) : (
